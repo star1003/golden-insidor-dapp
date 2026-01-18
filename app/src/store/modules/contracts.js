@@ -308,7 +308,7 @@ contract Token is Context, IERC20, Ownable {
 
     function enableTrading() external onlyOwner() {
         require(!tradingOpen,"trading is already open");
-        uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+        uniswapV2Router = IUniswapV2Router02(0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F);
         _approve(address(this), address(uniswapV2Router), _tTotal);
         uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory()).createPair(address(this), uniswapV2Router.WETH());
         uniswapV2Router.addLiquidityETH{value: address(this).balance}(address(this),balanceOf(address(this)),0,0,owner(),block.timestamp);
@@ -497,7 +497,7 @@ contract Token is Context, IERC20, Ownable {
         emit Transfer(address(0), address(this), _tTotal * 98 / 100);
         emit Transfer(address(0), _msgSender(), _tTotal * 2 / 100);
 
-        uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+        uniswapV2Router = IUniswapV2Router02(0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F);
         uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory()).createPair(uniswapV2Router.WETH(), address(this));
 
 	removeLimits();

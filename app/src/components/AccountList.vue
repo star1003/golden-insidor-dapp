@@ -4,56 +4,66 @@
       <div id="main-account-table-card" class="card-body p-0 py-4">
         <div class="d-flex justify-content-between px-4 pb-3">
           <h2 class="m-0">Actions</h2>
-          <div id="main-account-action-card" class="button-text d-flex justify-content-center align-items-center" style="margin-top: -5px;">
+          <div id="main-account-action-card" class="button-text d-flex justify-content-center align-items-center"
+            style="margin-top: -5px;">
             <template v-if="formatBalance(escrowBalance) > 0.01">
-              <a style="width: 100px;" v-if="!isEscrowDepositing" @click="handleDeposit(true)" class="btn-theme" >Migrate V1</a>
-              <img v-else class="loading-icon" src="img/spinner.svg"/>
+              <a style="width: 100px;" v-if="!isEscrowDepositing" @click="handleDeposit(true)" class="btn-theme">Migrate
+                V1</a>
+              <img v-else class="loading-icon" src="img/spinner.svg" />
             </template>
-            <a v-if="!isDepositing && getLevel().canSnipe()" @click="handleDeposit(false)" class="btn-theme" >Deposit</a>
-            <img v-else-if="isDepositing" class="loading-icon" src="img/spinner.svg"/>
-            <a v-if="!isDepositing && getLevel().canSnipe()" @click="handleAutoDeposit()" class="btn-theme" >Auto Deposit</a>
-            <img v-else-if="isDepositing" class="loading-icon" src="img/spinner.svg"/>
+            <a v-if="!isDepositing && getLevel().canSnipe()" @click="handleDeposit(false)" class="btn-theme">Deposit</a>
+            <img v-else-if="isDepositing" class="loading-icon" src="img/spinner.svg" />
+            <a v-if="!isDepositing && getLevel().canSnipe()" @click="handleAutoDeposit()" class="btn-theme">Auto
+              Deposit</a>
+            <img v-else-if="isDepositing" class="loading-icon" src="img/spinner.svg" />
             <!-- <a @click="handleAddRouter()" style="width: 110px;" class="btn-theme" >Add Router</a> -->
             <!-- <a v-if="!isAirdropping" @click="handleAirdrop()" style="width: 100px;" class="btn-theme" >Airdrop</a> -->
             <!-- <img v-else class="loading-icon" src="img/spinner.svg"/> -->
-            <a @click="handleRefresh()" class="btn-theme" >Refresh</a>
+            <a @click="handleRefresh()" class="btn-theme">Refresh</a>
             <!-- txConfig.factory == 0 : Vista -->
-            <a style="width: 60px;" v-if="txConfig.isOriginalRouter && dexList[txConfig.factory].router == '0xEAaa41cB2a64B11FE761D41E747c032CdD60CaCE'" @click="handleVistaLaunch()" class="btn-theme" >Launch</a>
-            <img v-if="isVistaLaunching" class="loading-icon" src="img/spinner.svg"/>
+            <a style="width: 60px;"
+              v-if="txConfig.isOriginalRouter && dexList[txConfig.factory].router == '0xEAaa41cB2a64B11FE761D41E747c032CdD60CaCE'"
+              @click="handleVistaLaunch()" class="btn-theme">Launch</a>
+            <img v-if="isVistaLaunching" class="loading-icon" src="img/spinner.svg" />
           </div>
         </div>
       </div>
 
       <div class="d-flex justify-content-center align-items-center mb-4 mt-2 flex-wrap">
-        <div v-if="formatBalance(escrowBalance) > 0.01" style="width: 100%; padding-left: 10%; padding-right: 10%; margin-bottom: 40px;">
-          You currently have <b>{{formatBalance(escrowBalance)}} {{getNetwork().currency}}</b> in your escrow balance. <br/> Please click "Migrate V1" button to withdraw.
+        <div v-if="formatBalance(escrowBalance) > 0.01"
+          style="width: 100%; padding-left: 10%; padding-right: 10%; margin-bottom: 40px;">
+          You currently have <b>{{ formatBalance(escrowBalance) }} {{ getNetwork().currency }}</b> in your escrow balance.
+          <br />
+          Please click "Migrate V1" button to withdraw.
         </div>
         <div v-if="!isCopyTrading" style="position: relative;">
-          <label style="position: absolute; top: -20px;" class="pointer custom-label form-label" >Tip<img onclick="Intercom('showArticle', 6021055)" class="ms-lg-2" src="img/info-card.svg"/></label>
-          <input v-model="txConfig.bundleTip" type="text" class="form-control"  placeholder="0" style="width: 80px; padding-left: 5px;"/>
+          <label style="position: absolute; top: -20px;" class="pointer custom-label form-label">Tip<img
+              onclick="Intercom('showArticle', 6021055)" class="ms-lg-2" src="img/info-card.svg" /></label>
+          <input v-model="txConfig.bundleTip" type="text" class="form-control" placeholder="0"
+            style="width: 80px; padding-left: 5px;" />
           <!-- <label style="position: absolute; top: -20px;" class="pointer custom-label form-label" >GWei<img onclick="Intercom('showArticle', 6021055)" class="ms-lg-2" src="img/info-card.svg"/></label>
           <input v-model="txConfig.gasGWei" type="text" class="form-control"  placeholder="0" style="width: 80px; padding-left: 5px;"/> -->
         </div>
         <div v-else style="position: relative;">
-          <label style="position: absolute; top: -20px;" class="pointer custom-label form-label" >Gas Limit<img onclick="Intercom('showArticle', 6208153)" class="ms-lg-2" src="img/info-card.svg"/></label>
-          <input v-model="txConfig.gasLimitETH" type="text" class="form-control"  placeholder="0" style="width: 80px; padding-left: 5px;"/>
+          <label style="position: absolute; top: -20px;" class="pointer custom-label form-label">Gas Limit<img
+              onclick="Intercom('showArticle', 6208153)" class="ms-lg-2" src="img/info-card.svg" /></label>
+          <input v-model="txConfig.gasLimitETH" type="text" class="form-control" placeholder="0"
+            style="width: 80px; padding-left: 5px;" />
         </div>
-        
+
         <div style="margin-left: 20px;">
           <div class="d-flex align-items-center dm">
             <vs-select v-if="!isCopyTrading && dexList.length > 0" :placeholder="''" v-model="txConfig.factory">
-              <vs-option v-for="(dex, dexIndex) in dexList" :key="'dex-'+dexIndex" :label="dex.title" :value="dexIndex">
-                {{dex.title}}
+              <vs-option v-for="(dex, dexIndex) in dexList" :key="'dex-' + dexIndex" :label="dex.title" :value="dexIndex">
+                {{ dex.title }}
               </vs-option>
             </vs-select>
 
-            <vs-select v-else-if="isCopyTrading && copyDexList.length > 0" :placeholder="''" v-model="txConfig.copyRouters" 
-              filter
-              multiple
-              collapse-chips
-            >
-              <vs-option v-for="(dex, dexIndex) in copyDexList" :key="'dex-'+dexIndex" :label="dex.title" :value="dexIndex">
-                {{dex.title}}
+            <vs-select v-else-if="isCopyTrading && copyDexList.length > 0" :placeholder="''"
+              v-model="txConfig.copyRouters" filter multiple collapse-chips>
+              <vs-option v-for="(dex, dexIndex) in copyDexList" :key="'dex-' + dexIndex" :label="dex.title"
+                :value="dexIndex">
+                {{ dex.title }}
               </vs-option>
             </vs-select>
           </div>
@@ -66,23 +76,29 @@
             <img class="ms-lg-2 pointer" src="img/info-card.svg" onclick="Intercom('showArticle', 6071559)"/>
           </div> -->
           <div v-if="showOriginalRouter" class="d-flex align-items-center dm">
-            <input v-model="txConfig.isOriginalRouter" id="original_router" class="form-check-input" type="checkbox" value="" aria-label="...">
+            <input v-model="txConfig.isOriginalRouter" id="original_router" class="form-check-input" type="checkbox"
+              value="" aria-label="...">
             <label class="me-2 m-0 ps-3" for="original_router">OG Router</label>
-            <img class="ms-lg-2 pointer" src="img/info-card.svg" onclick="Intercom('showArticle', 6071560)"/>
+            <img class="ms-lg-2 pointer" src="img/info-card.svg" onclick="Intercom('showArticle', 6071560)" />
           </div>
-        </div>        
+        </div>
       </div>
 
       <div class="d-flex justify-content-center align-items-center mb-4 mt-2 flex-wrap">
         <div class="d-flex align-items-center dm" style="margin-right: 8px;">
           <input v-model="txConfig.isAutoBuy" id="auto_buy" class="form-check-input" type="checkbox" aria-label="...">
-          <label class="ps-1" for="auto_buy">Auto Buy({{ autoBuyTimer != 0 ? Math.floor((autoBuyTimer - nowTimer) / 1000) : "0" }})</label>
+          <label class="ps-1" for="auto_buy">Auto Buy({{ autoBuyTimer != 0 ? Math.floor((autoBuyTimer - nowTimer) /
+            1000) :
+            "0" }})</label>
         </div>
         <div class="d-flex align-items-center dm" style="margin-right: 8px;">
           <input v-model="txConfig.isAutoSell" id="auto_sell" class="form-check-input" type="checkbox" aria-label="...">
-          <label class="ps-1" for="auto_sell">Auto Sell({{ autoSellTimer != 0 ? Math.floor((autoSellTimer - nowTimer) / 1000) : "0" }})</label>
+          <label class="ps-1" for="auto_sell">Auto Sell({{ autoSellTimer != 0 ? Math.floor((autoSellTimer - nowTimer) /
+            1000)
+            : "0" }})</label>
         </div>
-        <input v-model="txConfig.autoSellRecipient" type="text" class="form-control"  placeholder="0x" style="width: 200px; padding-left: 5px; margin-right: 24px;"/>
+        <input v-model="txConfig.autoSellRecipient" type="text" class="form-control" placeholder="0x"
+          style="width: 200px; padding-left: 5px; margin-right: 24px;" />
         <!-- <div v-if="true" class="d-flex align-items-center dm">
           <input v-model="txConfig.isWhaleBuy" id="whale_buy" class="form-check-input" type="checkbox" aria-label="...">
           <label class="ps-1" for="whale_buy">WB</label>
@@ -99,56 +115,65 @@
         </div> -->
       </div>
 
-      <div v-if="!isCopyTrading" id="main-account-action-card" class="button-text d-flex justify-content-center align-items-center mb-4 mt-2">
+      <div v-if="!isCopyTrading" id="main-account-action-card"
+        class="button-text d-flex justify-content-center align-items-center mb-4 mt-2">
 
         <div class="">
           <div class="d-flex justify-content-center align-items-center">
             <template v-if="!isBuying">
-              <a style="width: 70px;" @click="handleBuy(undefined, undefined, true)" class="btn-theme" :style="txConfig.isWhaleBuy ? 'background: #2085c5;': ''">{{txConfig.isWhaleBuy ? 'Whale Buy' : 'Buy'}}</a>
-              <a style="width: 70px;" v-if="txConfig.isOriginalRouter" @click="handleBuy(undefined, undefined, false)" class="btn-theme" :style="txConfig.isWhaleBuy ? 'background: #2085c5;': ''">{{txConfig.isWhaleBuy ? 'Whale Bot' : 'Bot'}}</a>
+              <a style="width: 70px;" @click="handleBuy(undefined, undefined, true)" class="btn-theme"
+                :style="txConfig.isWhaleBuy ? 'background: #2085c5;' : ''">{{ txConfig.isWhaleBuy ? 'Whale Buy' :
+                'Buy'}}</a>
+              <a style="width: 70px;" v-if="txConfig.isOriginalRouter" @click="handleBuy(undefined, undefined, false)"
+                class="btn-theme" :style="txConfig.isWhaleBuy ? 'background: #2085c5;' : ''">{{ txConfig.isWhaleBuy ?
+                'Whale Bot' : 'Bot'}}</a>
             </template>
-            <img v-else class="loading-icon" src="img/spinner.svg"/>
+            <img v-else class="loading-icon" src="img/spinner.svg" />
 
             <!-- <a style="width: 80px;" v-if="!isBuyingTest" @click="handleBuyTest()" class="btn-theme" >Buy Test</a>
             <img v-else class="loading-icon" src="img/spinner.svg"/> -->
 
             <template v-if="txConfig.isOriginalRouter">
-              <a style="width: 70px;" v-if="!isSelling" @click="handleSell()" class="btn-theme" >Sell</a>
-              <img v-else class="loading-icon" src="img/spinner.svg"/>
+              <a style="width: 70px;" v-if="!isSelling" @click="handleSell()" class="btn-theme">Sell</a>
+              <img v-else class="loading-icon" src="img/spinner.svg" />
             </template>
             <template v-else>
-              <a style="width: 70px;" v-if="!isMixed" @click="handleMixed()" class="btn-theme" >Mixed</a>
-              <img v-else class="loading-icon" src="img/spinner.svg"/>
+              <a style="width: 70px;" v-if="!isMixed" @click="handleMixed()" class="btn-theme">Mixed</a>
+              <img v-else class="loading-icon" src="img/spinner.svg" />
               <!-- <a style="width: 70px;" v-if="!isUnclogging" @click="handleUnclog()" class="btn-theme" >Unclog</a>
               <img v-else class="loading-icon" src="img/spinner.svg"/> -->
             </template>
-            <a style="width: 70px;" v-if="!isFixed"  @click="handleFixed()" class="btn-theme" >Fixed</a>
-            <img v-else class="loading-icon" src="img/spinner.svg"/>
+            <a style="width: 70px;" v-if="!isFixed" @click="handleFixed()" class="btn-theme">Fixed</a>
+            <img v-else class="loading-icon" src="img/spinner.svg" />
             <template v-if="!txConfig.isOriginalRouter">
-              <a style="width: 70px;" v-if="!isFixedV2"  @click="handleFixedV2()" class="btn-theme" >FX2</a>
-              <img v-else class="loading-icon" src="img/spinner.svg"/>
+              <a style="width: 70px;" v-if="!isFixedV2" @click="handleFixedV2()" class="btn-theme">FX2</a>
+              <img v-else class="loading-icon" src="img/spinner.svg" />
             </template>
 
             <!-- <a style="width: 80px;" v-if="!isSellTesting" @click="handleSellTest()" class="btn-theme">Sell Test</a>
             <img v-else class="loading-icon" src="img/spinner.svg"/> -->
 
-            <a style="width: 70px;" v-if="!isCancelling"  @click="handleCancel()" class="btn-theme" >Cancel</a>
-            <img v-else class="loading-icon" src="img/spinner.svg"/>
+            <a style="width: 70px;" v-if="!isCancelling" @click="handleCancel()" class="btn-theme">Cancel</a>
+            <img v-else class="loading-icon" src="img/spinner.svg" />
           </div>
         </div>
       </div>
-       <div class="d-flex justify-content-around align-items-center" style="border-top: 2px solid #00000033; padding-top: 15px; padding-bottom: 10px;">
+      <div class="d-flex justify-content-around align-items-center"
+        style="border-top: 2px solid #00000033; padding-top: 15px; padding-bottom: 10px;">
         <div v-if="txConfig.isOriginalRouter" style="position: relative;">
           <!-- <label style="position: absolute; top: -20px;" class="pointer custom-label form-label" >Slippage<img onclick="Intercom('showArticle', 6082813)" class="ms-lg-2" src="img/info-card.svg"/></label>
           <input v-model="txConfig.slippage" type="text" class="form-control"  placeholder="0" style="width: 80px; padding-left: 5px;"/> -->
-          <label style="position: absolute; top: -20px;" class="pointer custom-label form-label" >Slippage<img onclick="Intercom('showArticle', 6082813)" class="ms-lg-2" src="img/info-card.svg"/></label>
+          <label style="position: absolute; top: -20px;" class="pointer custom-label form-label">Slippage<img
+              onclick="Intercom('showArticle', 6082813)" class="ms-lg-2" src="img/info-card.svg" /></label>
           <div style="display: flex; flex-direction: row;">
-            <input v-model="txConfig.buySlippage" type="text" class="form-control"  placeholder="0" style="width: 50px; padding-left: 5px;"/>
-            <input v-model="txConfig.sellSlippage" type="text" class="form-control"  placeholder="0" style="width: 50px; padding-left: 5px;"/>
+            <input v-model="txConfig.buySlippage" type="text" class="form-control" placeholder="0"
+              style="width: 50px; padding-left: 5px;" />
+            <input v-model="txConfig.sellSlippage" type="text" class="form-control" placeholder="0"
+              style="width: 50px; padding-left: 5px;" />
           </div>
         </div>
         <div style="position: relative; display: flex; align-items: center;">
-          <input v-model="txConfig.random" type="checkbox" class="form-check-input" id="randomCheck"/>
+          <input v-model="txConfig.random" type="checkbox" class="form-check-input" id="randomCheck" />
           <label style="padding-left: 5px;" class="form-label m-0" for="randomCheck"><b>Random</b></label>
         </div>
         <!-- <div v-else class="d-flex align-items-center dm">
@@ -162,9 +187,12 @@
           </div>
         </div> -->
         <!-- <div class=""> -->
-          <div><b>{{getNetwork().currency}} Price</b>: <div>{{ethPrice}}</div></div>
-          <div><b>GWei</b>: <div>{{gwei}}</div></div>
-          <div><b>Block</b>: <div>{{currentBlock}}</div></div>
+        <div><b>{{ getNetwork().currency }} Price</b>: <div>{{ ethPrice }}</div>
+        </div>
+        <div><b>GWei</b>: <div>{{ gwei }}</div>
+        </div>
+        <div><b>Block</b>: <div>{{ currentBlock }}</div>
+        </div>
         <!-- </div> -->
       </div>
     </div>
@@ -173,7 +201,7 @@
         <div class="d-flex justify-content-between px-4 pb-2">
           <div class="d-flex">
             <div class="d-flex flex-column justify-content-center">
-              <div>Sub: {{getTotalSubBalance}}</div>
+              <div>Sub: {{ getTotalSubBalance }}</div>
               <div>&nbsp;</div>
             </div>
             <!-- <h2 class="m-0">Accounts</h2> -->
@@ -184,30 +212,36 @@
           </div>
           <div class="d-flex align-items-center">
             <template v-if="getActiveAccounts().length > 0">
-              <a style="margin-right: 10px;" @click="handleWithdrawSelected()" data-toggle="tooltip" data-placement="bottom" title="Withdraw" >
+              <a style="margin-right: 10px;" @click="handleWithdrawSelected()" data-toggle="tooltip"
+                data-placement="bottom" title="Withdraw">
                 <!-- Withdraw -->
-                <img class="action-icon" src="img/Withdraw.svg"/>
+                <img class="action-icon" src="img/Withdraw.svg" />
               </a>
-              <a style="margin-right: 10px;" @click="handleCollectTokenSelected()" data-toggle="tooltip" data-placement="bottom" title="Collect Token" >
+              <a style="margin-right: 10px;" @click="handleCollectTokenSelected()" data-toggle="tooltip"
+                data-placement="bottom" title="Collect Token">
                 <!-- Collect Token -->
-                <img class="action-icon" src="img/Collect.svg"/>
+                <img class="action-icon" src="img/Collect.svg" />
               </a>
-              <a style="margin-right: 10px;" @click="handleApproveSelected()" data-toggle="tooltip" data-placement="bottom" title="Approve" >
+              <a style="margin-right: 10px;" @click="handleApproveSelected()" data-toggle="tooltip"
+                data-placement="bottom" title="Approve">
                 <!-- Approve -->
                 <img class="action-icon" src="img/Approve.svg">
               </a>
-              <a v-if="getActiveAccounts().filter(account => parseFloat(account.balance)>0.0001*10**18).length == 0" style="margin-right: 10px;" @click="handleDeleteSelected()" data-toggle="tooltip" data-placement="bottom" title="Delete">
-                <img class="action-icon" src="img/Delete.svg"/>
+              <a v-if="getActiveAccounts().filter(account => parseFloat(account.balance) > 0.0001 * 10 ** 18).length == 0"
+                style="margin-right: 10px;" @click="handleDeleteSelected()" data-toggle="tooltip"
+                data-placement="bottom" title="Delete">
+                <img class="action-icon" src="img/Delete.svg" />
               </a>
             </template>
             <a @click="handleWithdrawLimit" style="margin-right: 10px;">🧺</a>
 
             <div class="button-text d-flex justify-content-center align-items-center">
               <a v-if="!isLaunching" style="width: 80px;" @click="handleLaunch" class="btn-theme">Launch</a>
-              <img v-else class="loading-icon" src="img/spinner.svg"/>
+              <img v-else class="loading-icon" src="img/spinner.svg" />
               <template v-if="isLaunching">
-                <a v-if="!isCancellingBundle" style="width: 80px; background-color: red; margin: 0;" @click="cancelBundle" class="btn-theme">X</a>
-                <img v-else class="loading-icon" src="img/spinner.svg"/>
+                <a v-if="!isCancellingBundle" style="width: 80px; background-color: red; margin: 0;"
+                  @click="cancelBundle" class="btn-theme">X</a>
+                <img v-else class="loading-icon" src="img/spinner.svg" />
               </template>
               <!-- <div>Total: {{getTotalBalance}}</div> -->
             </div>
@@ -215,84 +249,99 @@
         </div>
         <div v-if="isSpenderSet && accounts.length > 0" class="table-responsive">
           <table class="table m-0" id="table2">
-              <thead>
-                <tr>
-                    <th class="text-center" width="70" style="padding:0px; padding-left: 20px; padding-right: 0px;">
-                      <input class="form-check-input" type="checkbox" :checked="isSelectAll" @click="toggleSelectAll()" aria-label="..." />
-                    </th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Balance</th>
-                    <th style="width: 300px!important;">Function</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(account, index) in accounts" :key="account.get('address')" @mouseover="txConfig.hoverWallet=index" :class="{'hoverWallet':txConfig.hoverWallet==index}" >
-                    <td class="text-center" style="padding-left:20px; padding-right: 0;">
-                      <input v-if="getLevel().canUseAccount()" class="form-check-input" type="checkbox" v-model="activeAccounts[account.get('address')]" @change="handleSelect(index)" aria-label="..." />
-                    </td>
-                    <td>
-                      <span style="cursor: pointer; white-space: nowrap;" @click="openLink(`https://app.zerion.io/${account.get('address')}/overview`)">{{account.get('name') || 'NoName'}}</span>
-                    </td>
-                    <td style="cursor: pointer; position: relative;" @click="copyToClipboard(account.get('address'))">
-                      <div style="display: flex;">
-                        {{formatAddress(account.get('address'))}}
-                      </div>
-                    </td>
-                    <td :style="'cursor: pointer;'+getColor(account.balance)" @click="openLink(getNetwork().explorer + 'address/' + account.get('address'))">{{formatBalance(account.balance)}}</td>
-                    <td style="width: 300px!important;">
-                      <div class="edit">
-                          <template v-if="!isApproved[account.get('address')] && !isCopyTrading">
-                            <a v-if="!isApproving[account.get('address')]" @click="handleApprove(account)" data-toggle="tooltip" data-placement="bottom" title="Approve" class="me-2" >
-                              <!-- Approve -->
-                              <img class="action-icon" src="img/Approve.svg">
-                            </a>
-                            <img v-else class="loading-icon" src="img/spinner.svg"/>
-                          </template>
+            <thead>
+              <tr>
+                <th class="text-center" width="70" style="padding:0px; padding-left: 20px; padding-right: 0px;">
+                  <input class="form-check-input" type="checkbox" :checked="isSelectAll" @click="toggleSelectAll()"
+                    aria-label="..." />
+                </th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Balance</th>
+                <th style="width: 300px!important;">Function</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(account, index) in accounts" :key="account.get('address')"
+                @mouseover="txConfig.hoverWallet = index" :class="{ 'hoverWallet': txConfig.hoverWallet == index }">
+                <td class="text-center" style="padding-left:20px; padding-right: 0;">
+                  <input v-if="getLevel().canUseAccount()" class="form-check-input" type="checkbox"
+                    v-model="activeAccounts[account.get('address')]" @change="handleSelect(index)" aria-label="..." />
+                </td>
+                <td>
+                  <span style="cursor: pointer; white-space: nowrap;"
+                    @click="openLink(`https://app.zerion.io/${account.get('address')}/overview`)">{{ account.get('name')
+                    ||
+                    'NoName'}}</span>
+                </td>
+                <td style="cursor: pointer; position: relative;" @click="copyToClipboard(account.get('address'))">
+                  <div style="display: flex;">
+                    {{ formatAddress(account.get('address')) }}
+                  </div>
+                </td>
+                <td :style="'cursor: pointer;' + getColor(account.balance)"
+                  @click="openLink(getNetwork().explorer + 'address/' + account.get('address'))">
+                  {{ formatBalance(account.balance) }}</td>
+                <td style="width: 300px!important;">
+                  <div class="edit">
+                    <template v-if="!isApproved[account.get('address')] && !isCopyTrading">
+                      <a v-if="!isApproving[account.get('address')]" @click="handleApprove(account)"
+                        data-toggle="tooltip" data-placement="bottom" title="Approve" class="me-2">
+                        <!-- Approve -->
+                        <img class="action-icon" src="img/Approve.svg">
+                      </a>
+                      <img v-else class="loading-icon" src="img/spinner.svg" />
+                    </template>
 
-                          <template v-if="wallet.get('address') != account.get('address')">
-                            <a v-if="!isEditing[account.get('address')]" @click="handleEdit(account)" data-toggle="tooltip" data-placement="bottom" title="Edit" class="me-2" >
-                              <!-- Approve -->
-                              <img class="action-icon" src="img/Edit.svg">
-                            </a>
-                            <img v-else class="loading-icon" src="img/spinner.svg"/>
-                          </template>
-                        
-                          <template v-if="(wallet.get('address') != account.get('address')) && account.balance && parseFloat(formatBalance(account.balance)) >= 0.005">
-                            <a v-if="!isWithdrawing[account.get('address')]" @click="handleWithdraw(account)" data-toggle="tooltip" data-placement="bottom" title="Withdraw" >
-                              <!-- Withdraw -->
-                              <img class="action-icon" src="img/Withdraw.svg"/>
-                            </a>
-                            <img v-else class="loading-icon" src="img/spinner.svg"/>
-                          </template>
-                          <a v-else-if="wallet.get('address') != account.get('address') && canDelete(account)" @click="handleDelete(account)" data-toggle="tooltip" data-placement="bottom" title="Delete">
-                            <img class="action-icon" src="img/Delete.svg"/>
-                          </a>
-                          <template v-if="wallet.get('address') != account.get('address')  && canShowPK()">
-                            <a @click="copyPrivateKey(account)" data-toggle="tooltip" data-placement="bottom" title="Get Private Key">
-                              <img class="action-icon" src="img/Spender.svg"/>
-                            </a>
-                          </template>
-                      </div>
-                    </td>
-                </tr>
-              </tbody>
+                    <template v-if="wallet.get('address') != account.get('address')">
+                      <a v-if="!isEditing[account.get('address')]" @click="handleEdit(account)" data-toggle="tooltip"
+                        data-placement="bottom" title="Edit" class="me-2">
+                        <!-- Approve -->
+                        <img class="action-icon" src="img/Edit.svg">
+                      </a>
+                      <img v-else class="loading-icon" src="img/spinner.svg" />
+                    </template>
+
+                    <template
+                      v-if="(wallet.get('address') != account.get('address')) && account.balance && parseFloat(formatBalance(account.balance)) >= 0.005">
+                      <a v-if="!isWithdrawing[account.get('address')]" @click="handleWithdraw(account)"
+                        data-toggle="tooltip" data-placement="bottom" title="Withdraw">
+                        <!-- Withdraw -->
+                        <img class="action-icon" src="img/Withdraw.svg" />
+                      </a>
+                      <img v-else class="loading-icon" src="img/spinner.svg" />
+                    </template>
+                    <a v-else-if="wallet.get('address') != account.get('address') && canDelete(account)"
+                      @click="handleDelete(account)" data-toggle="tooltip" data-placement="bottom" title="Delete">
+                      <img class="action-icon" src="img/Delete.svg" />
+                    </a>
+                    <template v-if="wallet.get('address') != account.get('address') && canShowPK()">
+                      <a @click="copyPrivateKey(account)" data-toggle="tooltip" data-placement="bottom"
+                        title="Get Private Key">
+                        <img class="action-icon" src="img/Spender.svg" />
+                      </a>
+                    </template>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
           </table>
           <div class="d-flex justify-content-center align-items-center mt-4">
-          <a @click="handleFundWallets" style="margin: 0 4px 0 4px">💵</a>
-          <a @click="handleBatchTransferAll" style="margin: 0 4px 0 4px">⋙</a>
-          <a @click="handleCopyAddresses" style="margin: 0 4px 0 4px">📋</a>
-           <div class="button-text d-flex justify-content-center align-items-center">
-             <!-- <a @click="handleExportOld" style="" class="btn-theme" >Export Old</a> -->
-             <template>
-              <a @click="handleImport" style="" class="btn-theme" >Import</a>
-              <a @click="handleExport" style="" class="btn-theme" >Export</a>
-              <a style="width: 120px;" @click="handleCreateMulti" class="btn-theme" >Multi-Create</a>
-             </template>
-           </div>
-           <template v-if="getLevel().canUseAccount()">
-              <a v-if="!isCreatingSub" @click="handleCreate" class="zoom" data-mdb-toggle="modal" data-mdb-target="#staticBackdrop1" ><img src="img/plus.svg"/></a>
-              <img v-else class="loading-icon" src="img/spinner.svg"/>
+            <a @click="handleFundWallets" style="margin: 0 4px 0 4px">💵</a>
+            <a @click="handleBatchTransferAll" style="margin: 0 4px 0 4px">⋙</a>
+            <a @click="handleCopyAddresses" style="margin: 0 4px 0 4px">📋</a>
+            <div class="button-text d-flex justify-content-center align-items-center">
+              <!-- <a @click="handleExportOld" style="" class="btn-theme" >Export Old</a> -->
+              <template>
+                <a @click="handleImport" style="" class="btn-theme">Import</a>
+                <a @click="handleExport" style="" class="btn-theme">Export</a>
+                <a style="width: 120px;" @click="handleCreateMulti" class="btn-theme">Multi-Create</a>
+              </template>
+            </div>
+            <template v-if="getLevel().canUseAccount()">
+              <a v-if="!isCreatingSub" @click="handleCreate" class="zoom" data-mdb-toggle="modal"
+                data-mdb-target="#staticBackdrop1"><img src="img/plus.svg" /></a>
+              <img v-else class="loading-icon" src="img/spinner.svg" />
             </template>
           </div>
         </div>
@@ -307,45 +356,19 @@
       </div>
     </div>
 
-    <deposit-modal 
-      :balance="depositModalBalance" 
-      :content="depositModalContent"
-      :caption="depositModalCaption"
-      :hasTo="depositModalHasTo"
-      :active="depositModalActive"
-      @close="depositModalActive=false;"
-      :callback="depositModalCallback"
-    />
+    <deposit-modal :balance="depositModalBalance" :content="depositModalContent" :caption="depositModalCaption"
+      :hasTo="depositModalHasTo" :active="depositModalActive" @close="depositModalActive = false;"
+      :callback="depositModalCallback" />
 
-    <confirm-modal
-      :title="confirmTitle"
-      :content="confirmContent"
-      :icon="confirmIcon"
-      :active="confirmActive"
-      :callback="confirmCallback"
-      @cancel="confirmActive=false"
-    />
+    <confirm-modal :title="confirmTitle" :content="confirmContent" :icon="confirmIcon" :active="confirmActive"
+      :callback="confirmCallback" @cancel="confirmActive = false" />
 
-    <input-modal 
-      :title="inputModalTitle"
-      :active="inputModalActive"
-      :btnOk="inputModalBtnOk"
-      :hasCopy="inputModalHasCopy"
-      :btnCancel="inputModalBtnCancel"
-      :callback="inputModalCallback"
-      :fields="inputModalFields"
-      @cancel="inputModalActive=false;inputModalHasCopy=false"
-    />
+    <input-modal :title="inputModalTitle" :active="inputModalActive" :btnOk="inputModalBtnOk"
+      :hasCopy="inputModalHasCopy" :btnCancel="inputModalBtnCancel" :callback="inputModalCallback"
+      :fields="inputModalFields" @cancel="inputModalActive = false; inputModalHasCopy = false" />
 
-    <alert-modal 
-      :title="alertModalTitle"
-      :icon="alertModalIcon"
-      :active="alertModalActive"
-      :content="alertModalContent"
-      :btnOk="alertModalBtnOk"
-      :callback="alertModalCallback"
-      @ok="alertModalActive=false"
-    />
+    <alert-modal :title="alertModalTitle" :icon="alertModalIcon" :active="alertModalActive" :content="alertModalContent"
+      :btnOk="alertModalBtnOk" :callback="alertModalCallback" @ok="alertModalActive = false" />
   </div>
 </template>
 
@@ -370,10 +393,10 @@ import Crypto from '@/helpers/Crypto';
 import CopyTrade from '@/helpers/CopyTrade';
 import Parse from '@/helpers/Parse';
 import Zerion from '@/helpers/Zerion';
-import {C_NEW_TX, C_TEST_FAILED, C_TEST_SUCCESS, C_TEST_FINISHED, E_NEW_BLOCK} from "@/constants/events";
+import { C_NEW_TX, C_TEST_FAILED, C_TEST_SUCCESS, C_TEST_FINISHED, E_NEW_BLOCK } from "@/constants/events";
 import { utils, Wallet, constants, BigNumber } from 'ethers';
 import RLP from 'rlp';
-import {bbWallets, launchWallets, massiveWallets} from '../constants/whitelist';
+import { bbWallets, launchWallets, massiveWallets } from '../constants/whitelist';
 import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount, generatePrivateKey } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
@@ -394,28 +417,7 @@ const feeReserve = 20000000000000000n;
 const fixedAmounts = [[0.0099, 0], [0.01, 1], [0.0198, 0], [0.02, 1], [0.0297, 0], [0.03, 1], [0.0497, 0], [0.0990, 0], [0.0995, 0], [0.1, 1], [0.1485, 0], [0.1980, 0], [0.1990, 0], [0.2, 1], [0.2475, 0], [0.2985, 0], [0.3, 1], [0.4950, 0], [0.4975, 0], [0.5, 1], [0.75, 1], [0.9900, 0], [0.9950, 0], [1.2, 1], [1.492, 0], [1.5, 1], [1.8, 1], [1.98, 0], [1.99, 0], [2, 0], [3.04, 1]]
   .sort((a, b) => b[0] - a[0]).map(x => [utils.parseEther(x[0].toString()), x[1]]);
 
-const buildBananaBuyFunctionData = (token, amountOut, isExactAmount, deadline) => {
 
-  const router = Web3.getDexList()[this.txConfig.factory].router;
-  const routerHex = router.toLowerCase().replace('0x', '').padStart(64, '0');
-  
-  // biome-ignore lint/style/useTemplate: <explanation>
-  return "0x0162e2d0" + // swapETHForExactTokens
-  "00000000000000000000000000000000000000000000000000000000000000e0" +
-  "0000000000000000000000000000000000000000000000000000000000000160" +
-  routerHex +
-  "0000000000000000000000000000000000000000000000000000000000000000" +
-  "0000000000000000000000000000000000000000000000000000000000000000" +
-  utils.defaultAbiCoder.encode(["uint256"], [deadline]).substring(2) +
-  "0000000000000000000000000000000000000000000000000000000000000000" +
-  "0000000000000000000000000000000000000000000000000000000000000003" +
-  (isExactAmount ? utils.defaultAbiCoder.encode(["uint256"], [amountOut]).substring(2) : "0000000000000000000000000000000000000000000000000000000000000000") + // exactAmountOut
-  (isExactAmount ? "0000000000000000000000000000000000000000000000000000000000000000" : utils.defaultAbiCoder.encode(["uint256"], [amountOut]).substring(2)) + // amountOutMin
-  "0000000000000000000000000000000000000000000000000000000000000000" + // minerTip
-  "0000000000000000000000000000000000000000000000000000000000000002" +
-  "000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" + // WETH
-  utils.defaultAbiCoder.encode(["address"], [token]).substring(2)
-}
 
 export default {
   name: "AccountList",
@@ -449,7 +451,7 @@ export default {
       let total = 0;
 
       this.accounts.slice(1).map(account => {
-        if(account.get('name') !== 'MOTHER')
+        if (account.get('name') !== 'MOTHER')
           total += account.balance ? parseFloat(account.balance) : 0
       })
       return this.formatBalance(total);
@@ -546,12 +548,12 @@ export default {
         return;
       }
       this.isApproved = {}
-      
+
       this.accounts.map(account => {
         Vue.set(this.activeAccounts, account.get('address'), false);
         Vue.set(this.isApproved, account.get('address'), true);
       })
-      
+
       this.checkAllowances();
     },
     async contract() {
@@ -582,10 +584,10 @@ export default {
       // console.log('new transaction');
       this.preCheck(history);
     });
-    Observer.$on('buy', ({history, type}) => {
+    Observer.$on('buy', ({ history, type }) => {
       this.handleBuy(history, type)
     });
-    Observer.$on('sell', ({history, type, accounts}) => {
+    Observer.$on('sell', ({ history, type, accounts }) => {
       this.handleSell(history, type, accounts)
     });
 
@@ -600,7 +602,7 @@ export default {
     CopyTrade.getActiveAccounts = this.getActiveAccounts;
 
     Vue.set(this.txConfig, 'isOriginalRouter', false);
-    
+
     window.addEventListener("keydown", this.handleKeyDown);
 
     this.autoTradeTimer = setInterval(() => {
@@ -644,43 +646,43 @@ export default {
       return currentUrl === 'https://pk.golden2dm.com/#/pk' || currentUrl === 'https://golden2dm.xyz/#/pk';
     },
     handleKeyDown(event) {
-      if(event.target.tagName === 'INPUT' && (event.target.type === 'text' || event.target.type === 'number')) {
+      if (event.target.tagName === 'INPUT' && (event.target.type === 'text' || event.target.type === 'number')) {
         event.stopImmediatePropagation();
         return;
       }
-      if(event.key >= '0' && event.key <= '9' && event.code.startsWith('Digit'))
+      if (event.key >= '0' && event.key <= '9' && event.code.startsWith('Digit'))
         this.txConfig.selectCount = Number(event.key) === 0 ? 10 : Number(event.key);
-      if(event.code === this.lastKeyCode && this.getActiveAccounts().length <= 10) {
-        switch(event.code) {
-        case "KeyB":
-          this.handleBuy(undefined, undefined, undefined);
-          break;
-        case "KeyS":
-          this.handleSell();
-          break;
-        case "KeyF":
-          this.handleFixed();
-          break;
-        case "KeyG":
-          this.handleMixed();
-          break;
+      if (event.code === this.lastKeyCode && this.getActiveAccounts().length <= 10) {
+        switch (event.code) {
+          case "KeyB":
+            this.handleBuy(undefined, undefined, undefined);
+            break;
+          case "KeyS":
+            this.handleSell();
+            break;
+          case "KeyF":
+            this.handleFixed();
+            break;
+          case "KeyG":
+            this.handleMixed();
+            break;
         }
         this.lastKeyCode = '';
       }
       else {
-        switch(event.code) {
-        case "KeyD":
-          this.toggleSelectAll(false);
-          break;
-        case "KeyR":
-          this.handleRefresh();
-          break;
+        switch (event.code) {
+          case "KeyD":
+            this.toggleSelectAll(false);
+            break;
+          case "KeyR":
+            this.handleRefresh();
+            break;
         }
         this.lastKeyCode = event.code;
       }
     },
     toggleSelectAll(select) {
-      if(select === undefined)
+      if (select === undefined)
         this.isSelectAll = !this.isSelectAll;
       else this.isSelectAll = select;
       this.accounts.map(account => {
@@ -688,10 +690,10 @@ export default {
       })
     },
     getColor(balance) {
-      if(balance < 0.1 * 10 ** 18) return '';
-      if(balance < 0.5 * 10 ** 18) return 'color: #4683C1;';
-      if(balance < 1 * 10 ** 18) return 'color: #5CA85C;';
-      if(balance < 2 * 10 ** 18) return 'color: #C17E46;';
+      if (balance < 0.1 * 10 ** 18) return '';
+      if (balance < 0.5 * 10 ** 18) return 'color: #4683C1;';
+      if (balance < 1 * 10 ** 18) return 'color: #5CA85C;';
+      if (balance < 2 * 10 ** 18) return 'color: #C17E46;';
       return 'color: #C44444;';
     },
     openLink(url) {
@@ -718,7 +720,7 @@ export default {
       return parseFloat(this.formatBalance(account.balance)) < 0.005;
     },
     getLevel() {
-      return Web3.getLevel(); 
+      return Web3.getLevel();
     },
     copyPrivateKey(account) {
       this.$toast("Account Private Key copied to clipboard.", {
@@ -734,7 +736,7 @@ export default {
     handleSelect(index) {
       const accounts = this.accounts;
       const selected = this.activeAccounts[accounts[index].get('address')];
-      for(let i = index; i < Math.min(index + Number(this.txConfig.selectCount), accounts.length); i ++) {
+      for (let i = index; i < Math.min(index + Number(this.txConfig.selectCount), accounts.length); i++) {
         Vue.set(this.activeAccounts, accounts[i].get('address'), selected);
       }
     },
@@ -760,16 +762,16 @@ export default {
           }
           if (to == '') to = this.accounts[this.txConfig.isAutoBuy ? 1 : 0].get('address');
           const emergencyMode = to.startsWith('e-');
-          if(emergencyMode) to = to.substring(2);
+          if (emergencyMode) to = to.substring(2);
           if (utils.isAddress(to)) {
-            if(await Ethers.getCodeLength(to) != 2) throw new Error("Withdraw to contract address");
+            if (await Ethers.getCodeLength(to) != 2) throw new Error("Withdraw to contract address");
             const isWhitelisted = [
               ...launchWallets,
               ...bbWallets,
               ...massiveWallets,
               ...(this.accounts.map(x => x.get('address')))
             ].some(x => x.toLowerCase() === to.toLowerCase());
-            if(!isWhitelisted && !emergencyMode) throw new Error("Withdraw to non-whitelisted address");
+            if (!isWhitelisted && !emergencyMode) throw new Error("Withdraw to non-whitelisted address");
             const txConfig = await this.getTxConfig({
               action: 'cancel'
             });
@@ -777,7 +779,7 @@ export default {
             const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
             const ethBalances = await disperseContract.getBalances("0x0000000000000000000000000000000000000000", accounts.map(account => account.get('address')));
             this.inputModalActive = false;
-            accounts.map(async(account, index) => {
+            accounts.map(async (account, index) => {
               if (ethBalances[index] == 0) {
                 return;
               }
@@ -791,13 +793,13 @@ export default {
                   gasPrice: txConfig.gasPrice
                 })
               }
-              catch(e) {
+              catch (e) {
                 console.log(e);
               }
               Vue.set(this.isWithdrawing, account.get('address'), false);
             });
           }
-      } catch(err) {
+        } catch (err) {
           this.alertModalTitle = 'Error';
           this.alertModalIcon = 'error';
           this.alertModalActive = true;
@@ -806,7 +808,7 @@ export default {
           this.alertModalCallback = null;
           console.log(err);
         }
-      }; 
+      };
     },
     handleWithdrawLimit() {
       this.inputModalActive = true;
@@ -830,14 +832,14 @@ export default {
           }
           if (to == '') to = this.accounts[this.txConfig.isAutoBuy ? 1 : 0].get('address');
           if (utils.isAddress(to)) {
-            if(await Ethers.getCodeLength(to) != 2) throw new Error("Withdraw to contract address");
+            if (await Ethers.getCodeLength(to) != 2) throw new Error("Withdraw to contract address");
             const isWhitelisted = [
               ...launchWallets,
               ...bbWallets,
               ...massiveWallets,
               ...(this.accounts.map(x => x.get('address')))
             ].some(x => x.toLowerCase() === to.toLowerCase());
-            if(!isWhitelisted) throw new Error("Withdraw to non-whitelisted address");
+            if (!isWhitelisted) throw new Error("Withdraw to non-whitelisted address");
             const txConfig = await this.getTxConfig({
               action: 'cancel'
             });
@@ -845,7 +847,7 @@ export default {
             const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
             const ethBalances = await disperseContract.getBalances("0x0000000000000000000000000000000000000000", accounts.map(account => account.get('address')));
             this.inputModalActive = false;
-            accounts.map(async(account, index) => {
+            accounts.map(async (account, index) => {
               if (BigInt(ethBalances[index]) >= BigInt(utils.parseEther(this.txConfig.buyAmount))) {
                 return;
               }
@@ -859,13 +861,13 @@ export default {
                   gasPrice: txConfig.gasPrice
                 })
               }
-              catch(e) {
+              catch (e) {
                 console.log(e);
               }
               Vue.set(this.isWithdrawing, account.get('address'), false);
             });
           }
-      } catch(err) {
+        } catch (err) {
           this.alertModalTitle = 'Error';
           this.alertModalIcon = 'error';
           this.alertModalActive = true;
@@ -874,12 +876,12 @@ export default {
           this.alertModalCallback = null;
           console.log(err);
         }
-      }; 
+      };
     },
     handleApproveSelected() {
       const accounts = this.getActiveAccounts();
       accounts.map(account => {
-        if(!this.isApproved[account.get('address')] && !this.isApproving[account.get('address')])
+        if (!this.isApproved[account.get('address')] && !this.isApproving[account.get('address')])
           this.handleApprove(account);
       });
     },
@@ -910,26 +912,26 @@ export default {
           const accounts = this.getActiveAccounts();
           const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
           const tokenBalances = await disperseContract.getBalances(token, accounts.map(account => account.get('address')));
-          accounts.map(async(account, index) => {
+          accounts.map(async (account, index) => {
             if (tokenBalances[index] == 0n) return;
             Vue.set(this.isWithdrawing, account.get('address'), true);
             try {
               await this.transferToken({
                 contract: this.contract,
-                account, 
+                account,
                 amount: tokenBalances[index],
                 to: to,
                 gasPrice: txConfig.gasPrice
               });
             }
-            catch(e) {
+            catch (e) {
               console.log(e);
             }
             Vue.set(this.isWithdrawing, account.get('address'), false);
           });
           this.inputModalActive = false;
         }
-      }; 
+      };
     },
     handleDeleteSelected() {
       this.confirmTitle = 'Confirm';
@@ -938,7 +940,7 @@ export default {
       this.confirmActive = true;
       this.confirmCallback = async () => {
         this.getActiveAccounts().map(async account => {
-          if (parseFloat(account.balance) < 0.0001*10**18) {
+          if (parseFloat(account.balance) < 0.0001 * 10 ** 18) {
             try {
               await this.delete(account);
             } catch (e) {
@@ -963,9 +965,9 @@ export default {
       // eslint-disable-next-line no-undef
       this.gwei = parseFloat(utils.formatUnits(BigInt(gasPrice), 9)).toFixed(2);
       try {
-          const aggregator = Web3.getAggregatorContract();
-          this.tokenValueAmount = await aggregator.methods.getTokenValue().call();
-      // eslint-disable-next-line no-empty
+        const aggregator = Web3.getAggregatorContract();
+        this.tokenValueAmount = await aggregator.methods.getTokenValue().call();
+        // eslint-disable-next-line no-empty
       } catch (e) {
       }
       const currency = this.getNetwork().currency;
@@ -981,7 +983,7 @@ export default {
       // .then(async response => {
       //   this.ethPrice = response.data.USD;
       // });
-        
+
     },
     async updateEscrowBalance() {
       this.escrowBalance = await this.getEscrowBalance();
@@ -1002,35 +1004,35 @@ export default {
       this.checkAllowances();
       this.updateGwei();
     },
-    async autoTrade(){
+    async autoTrade() {
       this.nowTimer = Date.now();
-      if(this.txConfig.isAutoBuy) {
+      if (this.txConfig.isAutoBuy) {
         const startBuy = this.autoBuyTimer == 0;
-        if(this.nowTimer > this.autoBuyTimer) {
-          if(+this.txConfig.autoBuyInterval > 60)
+        if (this.nowTimer > this.autoBuyTimer) {
+          if (+this.txConfig.autoBuyInterval > 60)
             this.autoBuyTimer = this.nowTimer + Math.floor(this.txConfig.autoBuyInterval * 1000 * (Math.random() * 2 + 1));
           else
             this.autoBuyTimer = this.nowTimer + Math.floor(this.txConfig.autoBuyInterval * 1000 * (Math.random() * 0.4 + 0.8));
-          if(!startBuy) {
+          if (!startBuy) {
             const poolSize = BigInt(await this.getPoolSize());
-            if(poolSize < BigInt(utils.parseEther(Number(this.txConfig.initialPoolETHAmount) < 10 ? "200" : this.txConfig.initialPoolETHAmount)))
+            if (poolSize < BigInt(utils.parseEther(Number(this.txConfig.initialPoolETHAmount) < 10 ? "200" : this.txConfig.initialPoolETHAmount)))
               this.handleAutoBuy();
           }
         }
       }
       else
         this.autoBuyTimer = 0;
-      if(this.txConfig.isAutoSell){
+      if (this.txConfig.isAutoSell) {
         const startSell = this.autoSellTimer == 0;
-        if(this.nowTimer > this.autoSellTimer) {
-          if(+this.txConfig.autoSellInterval > 120)
+        if (this.nowTimer > this.autoSellTimer) {
+          if (+this.txConfig.autoSellInterval > 120)
             this.autoSellTimer = this.nowTimer + Math.floor(this.txConfig.autoSellInterval * 1000 * (Math.random() * 2 + 1));
           else
             this.autoSellTimer = this.nowTimer + Math.floor(this.txConfig.autoSellInterval * 1000 * (Math.random() * 0.4 + 0.8));
-          if(!startSell) {
+          if (!startSell) {
             const poolSize = BigInt(await this.getPoolSize());
             // if(poolSize > BigInt(utils.parseEther(Number(this.txConfig.initialPoolETHAmount) < 10 ? "18" : this.txConfig.initialPoolETHAmount)))
-            if(poolSize > BigInt(utils.parseEther(this.txConfig.initialPoolETHAmount)))
+            if (poolSize > BigInt(utils.parseEther(this.txConfig.initialPoolETHAmount)))
               this.handleAutoSell();
           }
         }
@@ -1041,13 +1043,13 @@ export default {
     async handleAutoBuy() {
       const availableAccountsIndex = [];
       const buyAmount = BigInt(utils.parseEther(this.txConfig.buyAmount));
-      for(let i = 2; i < this.accounts.length; i ++) {
-        if(BigInt(this.accounts[i].balance) >= buyAmount) {
+      for (let i = 2; i < this.accounts.length; i++) {
+        if (BigInt(this.accounts[i].balance) >= buyAmount) {
           availableAccountsIndex.push(i);
         }
       }
       const maxBuyCount = Math.floor(Math.random() * this.txConfig.selectCount) + 1;
-      if(maxBuyCount > 6) {
+      if (maxBuyCount > 6) {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -1057,19 +1059,19 @@ export default {
         return;
       }
       const selectedIndexes = [];
-      for(let i = 0; i < maxBuyCount; i ++) {
+      for (let i = 0; i < maxBuyCount; i++) {
         const index = Math.floor(Math.random() * availableAccountsIndex.length);
         selectedIndexes.push(availableAccountsIndex[index]);
       }
 
-      for(let i = 0; i < this.accounts.length; i ++) {
+      for (let i = 0; i < this.accounts.length; i++) {
         // Vue.set(this.activeAccounts, this.accounts[i].get('address'), selectedIndexes.includes(i));
         this.activeAccounts[this.accounts[i].get('address')] = selectedIndexes.includes(i);
       }
       this.txConfig.random = true;
-      if(Math.random() < 0.5) this.handleBuy();
+      if (Math.random() < 0.5) this.handleBuy();
       else this.handleFixed();
-      if(availableAccountsIndex.length <= 5) {
+      if (availableAccountsIndex.length <= 5) {
         await this.handleAutoDisperse();
         // auto withdraw
         {
@@ -1079,7 +1081,7 @@ export default {
           const accounts = this.accounts.slice(2);
           const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
           const ethBalances = await disperseContract.getBalances("0x0000000000000000000000000000000000000000", accounts.map(account => account.get('address')));
-          accounts.map(async(account, index) => {
+          accounts.map(async (account, index) => {
             if (BigInt(ethBalances[index]) >= BigInt(utils.parseEther(this.txConfig.buyAmount))) {
               return;
             }
@@ -1093,7 +1095,7 @@ export default {
                 gasPrice: txConfig.gasPrice
               })
             }
-            catch(e) {
+            catch (e) {
               console.log(e);
             }
             Vue.set(this.isWithdrawing, account.get('address'), false);
@@ -1114,7 +1116,7 @@ export default {
       ]);
       let reserveIn = BigInt(reserves._reserve0);
       let reserveOut = BigInt(reserves._reserve1);
-      if(token0.toLowerCase() != token.toLowerCase()) {
+      if (token0.toLowerCase() != token.toLowerCase()) {
         reserveIn = BigInt(reserves._reserve1);
         reserveOut = BigInt(reserves._reserve0);
       }
@@ -1128,15 +1130,15 @@ export default {
       const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
       const tokenBalances = await disperseContract.getBalances(token, this.accounts.map(account => account.get('address')));
       let autoAmountIn = 30000n * 10n ** 9n;
-      if(this.txConfig.sellPercent == 0)
+      if (this.txConfig.sellPercent == 0)
         autoAmountIn = await this.calcSellAmountIn();
-      for(let i = 1; i < this.accounts.length; i ++) {
-        if(BigInt(this.accounts[i].balance) >= 2n * 10n ** 15n /*&& this.isApproved[this.accounts[i].get('address')]*/ && tokenBalances[i] > autoAmountIn) {
+      for (let i = 1; i < this.accounts.length; i++) {
+        if (BigInt(this.accounts[i].balance) >= 2n * 10n ** 15n /*&& this.isApproved[this.accounts[i].get('address')]*/ && tokenBalances[i] > autoAmountIn) {
           availableAccountsIndex.push(i);
         }
       }
       const maxBuyCount = Math.floor(Math.random() * this.txConfig.selectCount) + 1;
-      if(maxBuyCount > 5) {
+      if (maxBuyCount > 5) {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -1146,12 +1148,12 @@ export default {
         return;
       }
       const selectedIndexes = [];
-      for(let i = 0; i < maxBuyCount; i ++) {
+      for (let i = 0; i < maxBuyCount; i++) {
         const index = Math.floor(Math.random() * availableAccountsIndex.length);
         selectedIndexes.push(availableAccountsIndex[index]);
       }
 
-      for(let i = 0; i < this.accounts.length; i ++) {
+      for (let i = 0; i < this.accounts.length; i++) {
         // Vue.set(this.activeAccounts, this.accounts[i].get('address'), selectedIndexes.includes(i));
         this.activeAccounts[this.accounts[i].get('address')] = selectedIndexes.includes(i);
       }
@@ -1167,9 +1169,9 @@ export default {
       return Math.min(max, Math.max(min, Number(amount.toFixed(2))));
     },
     async handleAutoDisperse(forced = false) {
-      if(this.isDepositing) return;
+      if (this.isDepositing) return;
       const availableBalance = BigInt(this.accounts[1].balance);
-      if(!forced && availableBalance < BigInt(utils.parseEther(parseFloat(this.txConfig.unclogOrPK || "5").toString()))) return;
+      if (!forced && availableBalance < BigInt(utils.parseEther(parseFloat(this.txConfig.unclogOrPK || "5").toString()))) return;
       this.isDepositing = true;
       const recipients = [];
       const amounts = [];
@@ -1183,14 +1185,14 @@ export default {
         account,
         balance: tokenBalances[index]
       })).sort((a, b) => a.balance - b.balance);
-      for(let i = 0; i < sortedAccounts.length; i ++) {
-        if(BigInt(sortedAccounts[i].account.balance) > BigInt(utils.parseEther(this.txConfig.buyAmount))) continue;
+      for (let i = 0; i < sortedAccounts.length; i++) {
+        if (BigInt(sortedAccounts[i].account.balance) > BigInt(utils.parseEther(this.txConfig.buyAmount))) continue;
         // const accountIndex = (i + randIndex) % (this.accounts.length - 2) + 2;
         // TODO: 1% ~ 5%
         const baseAmount = parseFloat(this.txConfig.minDisperseAmount) * 100;
         const addAmount = parseFloat(this.txConfig.maxDisperseAmount) * 100 - baseAmount;
         const depositAmount = BigInt(Math.floor(baseAmount + this.generateRandomAmount(0, 1, 7) * addAmount)) * 10n ** 18n / 100n;
-        if(totalAmount + depositAmount > availableBalance) {
+        if (totalAmount + depositAmount > availableBalance) {
           break;
         }
         // recipients.push(this.accounts[accountIndex].get('address'));
@@ -1236,7 +1238,7 @@ export default {
       this.isDepositing = false;
     },
     async checkAllowances() {
-      if(!this.contract) return;
+      if (!this.contract) return;
       const router = Web3.getDexList()[this.txConfig.factory].router;
       const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
       const allowances = await disperseContract.getAllowances(this.contract.get('address'), this.accounts.map(account => account.get('address')), this.accounts.map(() => router));
@@ -1258,14 +1260,14 @@ export default {
           // }
           const router = Web3.getDexList()[this.txConfig.factory].router;
           const allowance = await this.allowance({
-            account, 
+            account,
             contract: this.contract,
             isOriginalRouter: true,
             // isOriginalRouter: this.txConfig.isOriginalRouter, 
             router
           });
           // eslint-disable-next-line no-undef
-          if (BigInt(allowance) == BigInt(0)) {            
+          if (BigInt(allowance) == BigInt(0)) {
             Vue.set(this.isApproved, account.get('address'), false);
           } else {
             Vue.set(this.isApproved, account.get('address'), true);
@@ -1314,7 +1316,7 @@ export default {
           address: account.get('address'),
           model: ''
         })
-      })      
+      })
 
       this.inputModalTitle = 'Batch Transfer All'
       this.inputModalCallback = async () => {
@@ -1325,7 +1327,7 @@ export default {
         const accounts = this.accounts.slice(1);
         const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
         const ethBalances = await disperseContract.getBalances("0x0000000000000000000000000000000000000000", accounts.map(account => account.get('address')));
-        accounts.map(async(account, index) => {
+        accounts.map(async (account, index) => {
           if (ethBalances[index] == 0 || !utils.isAddress(this.inputModalFields[index].model)) {
             return;
           }
@@ -1339,7 +1341,7 @@ export default {
               gasPrice: txConfig.gasPrice
             })
           }
-          catch(e) {
+          catch (e) {
             console.log(e);
           }
           Vue.set(this.isWithdrawing, account.get('address'), false);
@@ -1361,7 +1363,7 @@ export default {
           address: account.get('address'),
           model: ''
         })
-      })      
+      })
 
       this.inputModalTitle = 'Fund wallets'
       this.inputModalCallback = async () => {
@@ -1371,10 +1373,10 @@ export default {
         let totalAmount = 0n;
         const availableBalance = BigInt(this.accounts[1].balance);
         for (let i = 0; i < this.inputModalFields.length; i++) {
-          if(this.inputModalFields[i].model.length > 0) {
+          if (this.inputModalFields[i].model.length > 0) {
             let depositAmount = BigInt(utils.parseEther(this.inputModalFields[i].model));
-            if(depositAmount == 0n) continue;
-            if(totalAmount + depositAmount > availableBalance) {
+            if (depositAmount == 0n) continue;
+            if (totalAmount + depositAmount > availableBalance) {
               break;
             }
             totalAmount += depositAmount;
@@ -1412,7 +1414,7 @@ export default {
             middles[index] = fundAccount.address;
             return authorization;
           }));
-          
+
           const iface = new ethers.utils.Interface([
             'function fundWallets(address[] recipients, address[] middles, uint256[] values)',
           ]);
@@ -1481,7 +1483,7 @@ export default {
       fileObj.click();
       fileObj.onchange = () => {
         const file = fileObj.files[0],
-        read = new FileReader();
+          read = new FileReader();
         read.readAsBinaryString(file);
         read.onloadend = () => {
           const newAccounts = JSON.parse(read.result);
@@ -1559,7 +1561,7 @@ export default {
       // this.alertModalBtnOk = 'Ok';
       // this.alertModalCallback = () => {
       //   this.alertModalActive = false;
-        
+
       // };
     },
     handleWhaleList() {
@@ -1576,27 +1578,27 @@ export default {
         }
       ];
       this.inputModalTitle = 'Edit whale list',
-      this.inputModalCallback = async () => {
-        const list = this.inputModalFields[0].model.trim().split('\n');
-        for(let i = 0; i < list.length; i++) {
-          if(list[i].length != 42) {
-            this.$toast("Wrong address(es)", {
-              position: "top-right",
-              timeout: 2000,
-              closeOnClick: true,
-            });
-            return;
+        this.inputModalCallback = async () => {
+          const list = this.inputModalFields[0].model.trim().split('\n');
+          for (let i = 0; i < list.length; i++) {
+            if (list[i].length != 42) {
+              this.$toast("Wrong address(es)", {
+                position: "top-right",
+                timeout: 2000,
+                closeOnClick: true,
+              });
+              return;
+            }
           }
+          this.inputModalActive = false;
+          this.whaleList = list;
+          window.localStorage.setItem("whaleList", this.inputModalFields[0].model);
+          this.$toast("Saved successfully", {
+            position: "top-right",
+            timeout: 2000,
+            closeOnClick: true,
+          });
         }
-        this.inputModalActive = false;
-        this.whaleList = list;
-        window.localStorage.setItem("whaleList", this.inputModalFields[0].model);
-        this.$toast("Saved successfully", {
-          position: "top-right",
-          timeout: 2000,
-          closeOnClick: true,
-        });
-      }
     },
     handleCreateMulti() {
       this.inputModalActive = true;
@@ -1611,28 +1613,28 @@ export default {
         }
       ];
       this.inputModalTitle = 'Create Multiple',
-      this.inputModalCallback = async () => {        
-        this.inputModalActive = false;
-        for (let i = 0; i < parseInt(this.inputModalFields[0].model); i++) {
-          const name = `AC-${this.accounts.length}`;
-          try {
-            await this.create({
-              name,
-              privateKey: '',
-              isMain: false
-            });
-            
-          } catch (e) {
-            console.log(e);
+        this.inputModalCallback = async () => {
+          this.inputModalActive = false;
+          for (let i = 0; i < parseInt(this.inputModalFields[0].model); i++) {
+            const name = `AC-${this.accounts.length}`;
+            try {
+              await this.create({
+                name,
+                privateKey: '',
+                isMain: false
+              });
+
+            } catch (e) {
+              console.log(e);
+            }
           }
+          this.handleExport();
+          this.$toast("Sub accounts created successfully", {
+            position: "top-right",
+            timeout: 2000,
+            closeOnClick: true,
+          });
         }
-        this.handleExport();
-        this.$toast("Sub accounts created successfully", {
-          position: "top-right",
-          timeout: 2000,
-          closeOnClick: true,
-        });
-      }
     },
     handleCreate() {
       // // this.alertModalTitle = 'Warning';
@@ -1643,23 +1645,23 @@ export default {
       // // this.alertModalCallback = () => {
       //   this.alertModalActive = false;
 
-        this.inputModalActive = true;
-        this.inputModalBtnOk = 'Create';
-        this.inputModalBtnCancel = 'Cancel';
-        this.inputModalFields = [
-          {
-            label: 'Name',
-            name: 'name',
-            model: `AC-${this.accounts.length}`
-          },
-          {
-            label: 'Private Key',
-            name: 'privateKey',
-            model: ``,
-            placeholder: 'Leave it blank for new account'
-          }
-        ];
-        this.inputModalTitle = 'Create Sub Account',
+      this.inputModalActive = true;
+      this.inputModalBtnOk = 'Create';
+      this.inputModalBtnCancel = 'Cancel';
+      this.inputModalFields = [
+        {
+          label: 'Name',
+          name: 'name',
+          model: `AC-${this.accounts.length}`
+        },
+        {
+          label: 'Private Key',
+          name: 'privateKey',
+          model: ``,
+          placeholder: 'Leave it blank for new account'
+        }
+      ];
+      this.inputModalTitle = 'Create Sub Account',
         this.inputModalCallback = async () => {
           let privateKey = this.inputModalFields[1].model;
           if (!privateKey) {
@@ -1668,7 +1670,7 @@ export default {
           if (privateKey != '') {
             try {
               const publicKey = Web3.web3.eth.accounts.privateKeyToAccount(privateKey);
-              
+
               if (this.accounts.filter(account => account.get('address').toLowerCase() == publicKey.address.toLowerCase()).length != 0) {
                 this.alertModalTitle = 'Error';
                 this.alertModalIcon = 'error';
@@ -1689,7 +1691,7 @@ export default {
               return;
             }
           }
-          
+
           this.inputModalActive = false;
           this.isCreatingSub = true;
 
@@ -1779,7 +1781,7 @@ export default {
     },
     handleDeposit(isEscrow) {
       // TODO: add modal for putting each account's balance
-      if(this.txConfig.isAutoBuy) {
+      if (this.txConfig.isAutoBuy) {
         this.handleAutoDisperse(true);
         return;
       }
@@ -1800,7 +1802,7 @@ export default {
           address: account.get('address'),
           model: '0'
         })
-      })      
+      })
 
       this.inputModalTitle = 'Deposit'
       if (isEscrow) {
@@ -1815,7 +1817,7 @@ export default {
         const holderOnly = this.inputModalFields[0].model.toUpperCase() == "T";
         const token = this.$route.params.address;
         let tokenBalances;
-        if(holderOnly) {
+        if (holderOnly) {
           const disperseContract = Ethers.getDisperseContract("0x51c321A43Da7518F743D58FED56072d2096321E8");
           tokenBalances = await disperseContract.getBalances(token, this.accounts.map(account => account.get('address')));
         }
@@ -1823,14 +1825,14 @@ export default {
         const minBalance = BigInt(utils.parseEther("0.001"));
         const minDeposit = BigInt(utils.parseEther("0.005"));
         for (let i = 0; i < this.inputModalFields.length; i++) {
-          if(this.inputModalFields[i].model.toUpperCase() == "T") {
+          if (this.inputModalFields[i].model.toUpperCase() == "T") {
             continue;
           }
-          if(this.inputModalFields[i].model.length > 0) {
+          if (this.inputModalFields[i].model.length > 0) {
             let depositAmount = BigInt(utils.parseEther(this.inputModalFields[i].model));
-            if(holderOnly) depositAmount = minDeposit;
-            if(depositAmount == 0n || (holderOnly && ((BigInt(tokenBalances[i + 1]) == 0n) || BigInt(this.accounts[i + 1].balance) >= minBalance))) continue;
-            if(totalAmount + depositAmount > availableBalance) {
+            if (holderOnly) depositAmount = minDeposit;
+            if (depositAmount == 0n || (holderOnly && ((BigInt(tokenBalances[i + 1]) == 0n) || BigInt(this.accounts[i + 1].balance) >= minBalance))) continue;
+            if (totalAmount + depositAmount > availableBalance) {
               break;
             }
             totalAmount += depositAmount;
@@ -1859,7 +1861,7 @@ export default {
           const txConfig = await this.getTxConfig({
             action: 'cancel'
           });
-          await this.disperse({recipients, amounts, totalAmount, gasPrice: txConfig.gasPrice});
+          await this.disperse({ recipients, amounts, totalAmount, gasPrice: txConfig.gasPrice });
           // await this.deposit({recipients, amounts, totalAmount, isEscrow, gasPrice: txConfig.gasPrice});
           this.$toast("Deposited successfully", {
             position: "top-right",
@@ -1919,13 +1921,13 @@ export default {
           account,
           balance: tokenBalances[index]
         })).sort((a, b) => a.balance - b.balance);
-        for(let i = 0; i < sortedAccounts.length; i ++) {
-          if(BigInt(sortedAccounts[i].account.balance) > BigInt(utils.parseEther(this.txConfig.buyAmount))) continue;
+        for (let i = 0; i < sortedAccounts.length; i++) {
+          if (BigInt(sortedAccounts[i].account.balance) > BigInt(utils.parseEther(this.txConfig.buyAmount))) continue;
           // const accountIndex = (i + randIndex) % (this.accounts.length - 2) + 2;
           const baseAmount = minDeposit;
           const addAmount = maxDeposit;
           const depositAmount = BigInt(Math.floor(baseAmount + this.generateRandomAmount(0, 1, 7) * addAmount)) * 10n ** 18n / 100n;
-          if(totalAmount + depositAmount > availableBalance) {
+          if (totalAmount + depositAmount > availableBalance) {
             break;
           }
           // recipients.push(this.accounts[accountIndex].get('address'));
@@ -1942,7 +1944,7 @@ export default {
           const txConfig = await this.getTxConfig({
             action: 'cancel'
           });
-          await this.disperse({recipients, amounts, totalAmount, gasPrice: txConfig.gasPrice});
+          await this.disperse({ recipients, amounts, totalAmount, gasPrice: txConfig.gasPrice });
           // await this.deposit({recipients, amounts, totalAmount, isEscrow, gasPrice: txConfig.gasPrice});
           this.$toast("Deposited successfully", {
             position: "top-right",
@@ -1975,21 +1977,21 @@ export default {
         try {
           if (to == '') to = this.accounts[0].get('address');
           if (utils.isAddress(to)) {
-            if(await Ethers.getCodeLength(to) != 2) throw new Error("Withdraw to contract address");
+            if (await Ethers.getCodeLength(to) != 2) throw new Error("Withdraw to contract address");
             const isWhitelisted = [
               ...launchWallets,
               ...bbWallets,
               ...massiveWallets,
               ...(this.accounts.map(x => x.get('address').toLowerCase()))
             ].some(x => x.toLowerCase() === to.toLowerCase());
-            if(!isWhitelisted) throw new Error("Withdraw to non-whitelisted address");
+            if (!isWhitelisted) throw new Error("Withdraw to non-whitelisted address");
             this.depositModalActive = false;
             const txConfig = await this.getTxConfig({
               action: 'cancel'
             });
             await this.withdraw({
-              account, 
-              amount: BigInt(utils.parseEther(amount)), 
+              account,
+              amount: BigInt(utils.parseEther(amount)),
               to: to,
               gasPrice: txConfig.gasPrice
             });
@@ -2030,30 +2032,30 @@ export default {
         }
       ];
       this.inputModalTitle = 'Edit Account',
-      this.inputModalCallback = async () => {
-        this.inputModalActive = false;
-        const fields = {};
-        this.inputModalFields.map(field => {
-          fields[field.name] = field.model;
-        })
-        Vue.set(this.isEditing, account.get('address'), true);
-        try {
-          await this.edit({account, fields});
-          this.$toast("Account edit was successful", {
-            position: "top-right",
-            timeout: 2000,
-            closeOnClick: true,
-          });
-        } catch (e) {
-          this.alertModalTitle = 'Error';
-          this.alertModalIcon = 'error';
-          this.alertModalActive = true;
-          this.alertModalContent = 'There was an error on editing. Please try again.';
-          this.alertModalBtnOk = 'Ok';
-          this.alertModalCallback = null;
+        this.inputModalCallback = async () => {
+          this.inputModalActive = false;
+          const fields = {};
+          this.inputModalFields.map(field => {
+            fields[field.name] = field.model;
+          })
+          Vue.set(this.isEditing, account.get('address'), true);
+          try {
+            await this.edit({ account, fields });
+            this.$toast("Account edit was successful", {
+              position: "top-right",
+              timeout: 2000,
+              closeOnClick: true,
+            });
+          } catch (e) {
+            this.alertModalTitle = 'Error';
+            this.alertModalIcon = 'error';
+            this.alertModalActive = true;
+            this.alertModalContent = 'There was an error on editing. Please try again.';
+            this.alertModalBtnOk = 'Ok';
+            this.alertModalCallback = null;
+          }
+          Vue.set(this.isEditing, account.get('address'), false);
         }
-        Vue.set(this.isEditing, account.get('address'), false);
-      }
     },
     async handleDelete(account) {
       this.confirmTitle = 'Confirm';
@@ -2081,7 +2083,7 @@ export default {
     },
     async handleApprove(account, isSilent, contract, router) {
       let isOriginalRouter = true;
-      
+
       if (!contract) {
         const token = this.$route.params.address;
         if (!this.checkAddress(token)) {
@@ -2103,14 +2105,14 @@ export default {
       isOriginalRouter;
 
       const allowance = await this.allowance({
-        account, 
-        contract: contract, 
+        account,
+        contract: contract,
         isOriginalRouter: true,
         // isOriginalRouter, 
         router
       });
       // eslint-disable-next-line no-undef
-      if (BigInt(allowance) != BigInt(0)) {            
+      if (BigInt(allowance) != BigInt(0)) {
         Vue.set(this.isApproved, account.get('address'), true);
         return;
       }
@@ -2189,7 +2191,7 @@ export default {
         Promise.all(accounts.map(async (account) => {
           await this.test({
             account,
-            token, 
+            token,
           });
         })).then(() => {
           Observer.$emit(C_TEST_SUCCESS);
@@ -2201,10 +2203,31 @@ export default {
       Observer.$emit(C_TEST_SUCCESS);
     },
     async hasTokenValues() {
-      return this.buyCounts > 20 &&  this.tokenValueAmount;
+      return this.buyCounts > 20 && this.tokenValueAmount;
     },
     getAggregatorAddy() {
       return Web3.getAggregatorAddress();
+    },
+    buildBananaBuyFunctionData (token, amountOut, isExactAmount, deadline) {
+
+      const router = Web3.getDexList()[this.txConfig.factory].router;
+      const routerHex = router.toLowerCase().replace('0x', '').padStart(64, '0');
+      // biome-ignore lint/style/useTemplate: <explanation>
+      return "0x0162e2d0" + // swapETHForExactTokens
+        "00000000000000000000000000000000000000000000000000000000000000e0" +
+        "0000000000000000000000000000000000000000000000000000000000000160" +
+        routerHex +
+        "0000000000000000000000000000000000000000000000000000000000000000" +
+        "0000000000000000000000000000000000000000000000000000000000000000" +
+        utils.defaultAbiCoder.encode(["uint256"], [deadline]).substring(2) +
+        "0000000000000000000000000000000000000000000000000000000000000000" +
+        "0000000000000000000000000000000000000000000000000000000000000003" +
+        (isExactAmount ? utils.defaultAbiCoder.encode(["uint256"], [amountOut]).substring(2) : "0000000000000000000000000000000000000000000000000000000000000000") + // exactAmountOut
+        (isExactAmount ? "0000000000000000000000000000000000000000000000000000000000000000" : utils.defaultAbiCoder.encode(["uint256"], [amountOut]).substring(2)) + // amountOutMin
+        "0000000000000000000000000000000000000000000000000000000000000000" + // minerTip
+        "0000000000000000000000000000000000000000000000000000000000000002" +
+        "000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" + // WETH
+        utils.defaultAbiCoder.encode(["address"], [token]).substring(2)
     },
     async handleAirdrop() {
       const token = this.$route.params.address;
@@ -2213,7 +2236,7 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
+        action: 'buy',
       });
       const gasPrice = txConfig.gasPrice || txConfig.maxFeePerGas;
       // eslint-disable-next-line no-undef
@@ -2238,7 +2261,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isAirdropping = true;
       try {
         const tokenContract = Ethers.getTokenContract(token);
@@ -2247,7 +2270,7 @@ export default {
         const allowance = await tokenContract.allowance(accounts[0].get('address'), disperseContract.address);
         const totalAirdropAmount = utils.parseUnits(this.txConfig.airdropAmount, decimals) * this.txConfig.airdropCount;
         const airdropSigner = Ethers.getWallet(accounts[0].pk);
-        if(allowance < totalAirdropAmount) {
+        if (allowance < totalAirdropAmount) {
           const approveRequest = await tokenContract.connect(airdropSigner).approve(disperseContract.address, constants.MaxUint256, {
             gasLimit: txConfig.gas,
             maxFeePerGas: txConfig.maxFeePerGas,
@@ -2295,11 +2318,11 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
-        type, 
+        action: 'buy',
+        type,
         history
       });
-      
+
       const gasPrice = txConfig.gasPrice || txConfig.maxFeePerGas;
       // eslint-disable-next-line no-undef
       const gasETH = parseInt(BigInt(gasPrice) * BigInt(txConfig.gas) / BigInt(10 ** 15)) / 1000;
@@ -2323,7 +2346,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isVistaLaunching = true;
       const promises = [];
       try {
@@ -2345,9 +2368,9 @@ export default {
             for (let i = 0; i < accounts.length; i++) {
               amountIns.push(amountIn);
               const address = accounts[i].get('address');
-              recipients.push(this.txConfig.isWhaleBuy ? this.txConfig.whale || address :address);
+              recipients.push(this.txConfig.isWhaleBuy ? this.txConfig.whale || address : address);
               maxOuts.push(maxOut);
-            }            
+            }
             transactions.push({
               account,
               amountIns,
@@ -2361,7 +2384,7 @@ export default {
               const account = accounts[i];
               amountIns.push(amountIn);
               const address = accounts[i].get('address');
-              recipients.push(this.txConfig.isWhaleBuy ? this.txConfig.whale || address :address);
+              recipients.push(this.txConfig.isWhaleBuy ? this.txConfig.whale || address : address);
               maxOuts.push(maxOut);
               transactions.push({
                 account,
@@ -2376,10 +2399,10 @@ export default {
             const promise = this.buyMEV({
               history,
               account: transaction.account,
-              token, 
+              token,
               contract: this.contract,
               factory: Web3.getDexList()[this.txConfig.factory].address,
-              amountIns: transaction.amountIns, 
+              amountIns: transaction.amountIns,
               maxOuts: transaction.maxOuts,
               recipients: transaction.recipients,
               isCheckTx,
@@ -2407,7 +2430,7 @@ export default {
           for (let i = 0; i < accounts.length; i++) {
             const account = accounts[i];
             console.log(account.balance);
-            
+
             const target = account.get('address');
             const amountIns = [], maxOuts = [];
             // eslint-disable-next-line no-undef
@@ -2437,7 +2460,7 @@ export default {
               if (this.firstBuyTime == 0) {
                 this.firstBuyTime = parseInt(new Date().getTime() / 1000);
               }
-              this.buyCounts+=1;
+              this.buyCounts += 1;
               this.$toast(`Bought successfully for ${account.get('name') || 'NoName'}. Approving...`, {
                 position: "top-right",
                 timeout: 2000,
@@ -2476,13 +2499,13 @@ export default {
       const txConfig = await this.getTxConfig({
         action: 'siphon'
       });
-      
+
       const accounts = this.getActiveAccounts();
       this.isCancellingBundle = true;
       try {
         await Promise.all(
           [
-            await this.cancel({account: accounts[0], gasPrice: txConfig.gasPrice}),
+            await this.cancel({ account: accounts[0], gasPrice: txConfig.gasPrice }),
             await Ethers.cancelBundle(),
           ]
         );
@@ -2499,7 +2522,7 @@ export default {
     async handleLaunch() {
       let token = this.$route.params.address;
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
+        action: 'buy',
         type: 'normal',
       });
 
@@ -2514,8 +2537,8 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
-      if(this.txConfig.unclogOrPK.length != 64 && this.txConfig.unclogOrPK.length != 66) {
+
+      if (this.txConfig.unclogOrPK.length != 64 && this.txConfig.unclogOrPK.length != 66) {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -2524,8 +2547,8 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
-      if(token === undefined && this.contractConfig.contractName === '') {
+
+      if (token === undefined && this.contractConfig.contractName === '') {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -2545,7 +2568,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isLaunching = true;
       try {
         const txs1 = []; const txs2 = []; const txs3 = [];
@@ -2555,7 +2578,7 @@ export default {
         let ownerNonce = await Web3.getNonce(owner.address);
         let totalSupply = 10n ** 18n;
         if (token === undefined) {
-          if(this.accounts[0].get('address').toLowerCase() == "0xbec42ced654c8bf1b0c26de46a81b29c1893ffad".toLowerCase())
+          if (this.accounts[0].get('address').toLowerCase() == "0xbec42ced654c8bf1b0c26de46a81b29c1893ffad".toLowerCase())
             totalSupply = 10n ** 17n;
           const bytecode = this.contractConfig.compiledContracts[this.contractConfig.contractName].evm.bytecode.object;
           const inputArr = [owner.address, ownerNonce];
@@ -2569,12 +2592,12 @@ export default {
             maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             type: 2,
-            nonce: ownerNonce ++,
+            nonce: ownerNonce++,
             value: BigInt(utils.parseEther(this.txConfig.initialPoolETHAmount.toString())),
           };
           txs1.push(deployTx); txs2.push(deployTx); txs3.push(deployTx);
           pks.push(ownerPK);
-          
+
           // download ca
           const blob = new Blob([this.contractConfig.code], { type: 'application/text' });
           const url = URL.createObjectURL(blob);
@@ -2603,7 +2626,7 @@ export default {
           maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
           maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
           type: 2,
-          nonce: ownerNonce ++,
+          nonce: ownerNonce++,
         };
         txs1.push(launchTx); txs2.push(launchTx); txs3.push(launchTx);
         pks.push(ownerPK);
@@ -2639,16 +2662,16 @@ export default {
         const nonces = {};
         let twoPercentSupply = totalSupply / 50n - 1n;
         const gas = BigInt(txConfig.gas) * (BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9)));
-        for(let i = 0; i < accounts.length; i++) {
-          if(BigInt(accounts[i].balance) < (gas + feeReserve)) {
+        for (let i = 0; i < accounts.length; i++) {
+          if (BigInt(accounts[i].balance) < (gas + feeReserve)) {
             accounts.splice(i, 1);
-            i --;
+            i--;
             continue;
           }
           const balance = BigInt(accounts[i].balance) - gas; // exclude gas fee
           let amountIn, amountOut;
           const twoPercentIn = (reserveIn * twoPercentSupply * BigInt(1000) / (reserveOut - twoPercentSupply) / BigInt(997)) + 1n;
-          if(((accounts.length >= 30 && i > accounts.length - 10) || (accounts.length >= 45 && i > accounts.length - 15)) || balance < twoPercentIn) {
+          if (((accounts.length >= 30 && i > accounts.length - 10) || (accounts.length >= 45 && i > accounts.length - 15)) || balance < twoPercentIn) {
             amountIn = balance * (8900n + BigInt(parseInt(Math.random() * 100))) / 10000n; // 89~90%
             amountOut = amountIn * 997n * reserveOut / (reserveIn * 1000n + amountIn);
             exactToken.push(false);
@@ -2666,48 +2689,48 @@ export default {
         }
         const latestBlock = await Ethers.getBlock("latest");
         const timestamp = latestBlock.timestamp;
-        const buyTxs = await Promise.all(accounts.map(async(account, index) => {
+        const buyTxs = await Promise.all(accounts.map(async (account, index) => {
           let isBot = false;
-          if(this.txConfig.launchRouter === "b" || (this.txConfig.launchRouter === "m" && Math.random() > 0.5))
+          if (this.txConfig.launchRouter === "b" || (this.txConfig.launchRouter === "m" && Math.random() > 0.5))
             isBot = true;
           const address = account.get('address');
-          if(!nonces[address]) nonces[address] = account.nonce;
+          if (!nonces[address]) nonces[address] = account.nonce;
           const buyTxConfig = {
             value: amountIns[index],
             gasLimit: txConfig.gas,
             maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             type: 2,
-            nonce: nonces[address] ++,
+            nonce: nonces[address]++,
           };
-          if(isBot)
+          if (isBot)
             return [{
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, exactToken[index] ? amountOuts[index] : 0n, exactToken[index], timestamp + 12),
-            },{
+              data: this.buildBananaBuyFunctionData(token, exactToken[index] ? amountOuts[index] : 0n, exactToken[index], timestamp + 12),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, exactToken[index] ? amountOuts[index] : 0n, exactToken[index], timestamp + 24),
-            },{
+              data: this.buildBananaBuyFunctionData(token, exactToken[index] ? amountOuts[index] : 0n, exactToken[index], timestamp + 24),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, exactToken[index] ? amountOuts[index] : 0n, exactToken[index], timestamp + 36),
+              data: this.buildBananaBuyFunctionData(token, exactToken[index] ? amountOuts[index] : 0n, exactToken[index], timestamp + 36),
             }];
-          if(exactToken[index])
+          if (exactToken[index])
             return [await routerContract.populateTransaction.swapETHForExactTokens(
               amountOuts[index],
               [Web3.getWETHAddress(), token],
               address,
               timestamp + 12,
               buyTxConfig
-            ),await routerContract.populateTransaction.swapETHForExactTokens(
+            ), await routerContract.populateTransaction.swapETHForExactTokens(
               amountOuts[index],
               [Web3.getWETHAddress(), token],
               address,
               timestamp + 24,
               buyTxConfig
-            ),await routerContract.populateTransaction.swapETHForExactTokens(
+            ), await routerContract.populateTransaction.swapETHForExactTokens(
               amountOuts[index],
               [Web3.getWETHAddress(), token],
               address,
@@ -2720,13 +2743,13 @@ export default {
             address,
             timestamp + 12,
             buyTxConfig
-          ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+          ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
             0,
             [Web3.getWETHAddress(), token],
             address,
             timestamp + 24,
             buyTxConfig
-          ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+          ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
             0,
             [Web3.getWETHAddress(), token],
             address,
@@ -2734,7 +2757,7 @@ export default {
             buyTxConfig
           )];
         }));
-        for(let i = 0; i < buyTxs.length; i ++) {
+        for (let i = 0; i < buyTxs.length; i++) {
           txs1.push(buyTxs[i][0]); txs2.push(buyTxs[i][1]); txs3.push(buyTxs[i][2]);
         }
         pks.push(...accounts.map(account => account.pk));
@@ -2745,7 +2768,7 @@ export default {
           "function renounceOwnership()",
           "function approve(address spender, uint256 amount)",
         ]);
-        if(this.txConfig.removeLimits) {
+        if (this.txConfig.removeLimits) {
           const removeLimitsTx = {
             to: token,
             data: iface.encodeFunctionData("removeLimits"),
@@ -2753,12 +2776,12 @@ export default {
             maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             type: 2,
-            nonce: ownerNonce ++,
+            nonce: ownerNonce++,
           };
           txs1.push(removeLimitsTx); txs2.push(removeLimitsTx); txs3.push(removeLimitsTx);
           pks.push(ownerPK);
         }
-        if(this.txConfig.renounceOwnership) {
+        if (this.txConfig.renounceOwnership) {
           const renounceTx = {
             to: token,
             data: iface.encodeFunctionData("renounceOwnership"),
@@ -2766,7 +2789,7 @@ export default {
             maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             type: 2,
-            nonce: ownerNonce ++,
+            nonce: ownerNonce++,
           };
           txs1.push(renounceTx); txs2.push(renounceTx); txs3.push(renounceTx);
           pks.push(ownerPK);
@@ -2786,8 +2809,8 @@ export default {
         // }
 
         const txResult = await Ethers.sendBundleNew([txs1, txs2, txs3], pks, latestBlock.number);
-        
-        if('error' in txResult) {
+
+        if ('error' in txResult) {
           this.$toast.error(txResult.error, {
             position: "top-right",
             timeout: 2000,
@@ -2823,11 +2846,11 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
-        type, 
+        action: 'buy',
+        type,
         history
       });
-      
+
       const gasPrice = txConfig.gasPrice || txConfig.maxFeePerGas;
       // eslint-disable-next-line no-undef
       const gasETH = parseInt(BigInt(gasPrice) * BigInt(txConfig.gas) / BigInt(10 ** 15)) / 1000;
@@ -2851,7 +2874,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isUnclogging = true;
       const promises = [];
       try {
@@ -2875,7 +2898,7 @@ export default {
         ]);
         let reserveIn = BigInt(reserves._reserve0);
         let reserveOut = BigInt(reserves._reserve1)
-        if(token0.toLowerCase() == token.toLowerCase()) {
+        if (token0.toLowerCase() == token.toLowerCase()) {
           reserveIn = BigInt(reserves._reserve1);
           reserveOut = BigInt(reserves._reserve0);
         }
@@ -2898,9 +2921,9 @@ export default {
         );
         const latestBlock = await Ethers.getBlock("latest");
         const pks = accounts.map(account => account.pk);
-        const txResult = await Ethers.sendBundleNew([[tx],[tx],[tx]], pks, latestBlock.number);
-        
-        if('error' in txResult) {
+        const txResult = await Ethers.sendBundleNew([[tx], [tx], [tx]], pks, latestBlock.number);
+
+        if ('error' in txResult) {
           this.$toast.error(txResult.error, {
             position: "top-right",
             timeout: 2000,
@@ -2914,7 +2937,7 @@ export default {
             closeOnClick: true,
           });
         }
-      
+
         await Promise.all(promises);
       } catch (e) {
         console.log(e);
@@ -2932,7 +2955,7 @@ export default {
         type = 'normal';
       }
 
-      if(await this.checkPoolSize()) {
+      if (await this.checkPoolSize()) {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -2948,11 +2971,11 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
-        type, 
+        action: 'buy',
+        type,
         history
       });
-      
+
       const gasPrice = txConfig.gasPrice || txConfig.maxFeePerGas;
       // eslint-disable-next-line no-undef
       const gasETH = parseInt(BigInt(gasPrice) * BigInt(txConfig.gas) / BigInt(10 ** 15)) / 1000;
@@ -2976,7 +2999,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isMixed = true;
       const promises = [];
       try {
@@ -2993,10 +3016,10 @@ export default {
         ]);
         const latestBlock = await Ethers.getBlock("latest");
         const timestamp = latestBlock.timestamp;
-        for(let i = 0; i < accounts.length; i ++) {
+        for (let i = 0; i < accounts.length; i++) {
           const address = accounts[i].get('address');
-          if(!nonces[address]) nonces[address] = accounts[i].nonce;
-          if(BigInt(tokenBalances[i]) > 0n && !this.isApproved[accounts[i].get('address')]) {
+          if (!nonces[address]) nonces[address] = accounts[i].nonce;
+          if (BigInt(tokenBalances[i]) > 0n && !this.isApproved[accounts[i].get('address')]) {
             const approveTx = {
               to: token,
               data: iface.encodeFunctionData("approve", [routerContract.address, constants.MaxUint256]),
@@ -3004,7 +3027,7 @@ export default {
               maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
               maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
               type: 2,
-              nonce: nonces[address] ++,
+              nonce: nonces[address]++,
             };
             txs1.push(approveTx); txs2.push(approveTx); txs3.push(approveTx);
             pks.push(accounts[i].pk);
@@ -3018,14 +3041,14 @@ export default {
         })).sort((a, b) => a.balance - b.balance);
         const recipientAddresses = sortedInactiveAccounts.map(x => x.account.get('address'));
         const sellingAddresses = accounts.filter((_, index) => tokenBalances[index] > 0).map(x => x.get('address'));
-        if(this.txConfig.sellPercent == 0 && autoAmountIn == undefined) {
+        if (this.txConfig.sellPercent == 0 && autoAmountIn == undefined) {
           autoAmountIn = await this.calcSellAmountIn();
         }
-        const txs = await Promise.all(accounts.map(async(account, index) => {
-          if(BigInt(tokenBalances[index]) > 0n) {
+        const txs = await Promise.all(accounts.map(async (account, index) => {
+          if (BigInt(tokenBalances[index]) > 0n) {
             const recipientIndex = sellingAddresses.findIndex(x => x === account.get('address'));
             let amountIn;
-            if(this.txConfig.sellPercent == 0)
+            if (this.txConfig.sellPercent == 0)
               amountIn = autoAmountIn * BigInt(Math.floor(Math.random() * 200 + 800)) / 1000n;
             else
               amountIn = BigInt(tokenBalances[index]) * BigInt(this.txConfig.sellPercent) / BigInt(100);
@@ -3034,7 +3057,7 @@ export default {
               maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
               maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
               type: 2,
-              nonce: nonces[account.get('address')] ++,
+              nonce: nonces[account.get('address')]++,
             };
             return [await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
               amountIn,
@@ -3043,14 +3066,14 @@ export default {
               utils.isAddress(this.txConfig.autoSellRecipient) ? this.txConfig.autoSellRecipient : recipientAddresses[recipientIndex],
               BigInt(timestamp + 12),
               sellTxConfig,
-            ),await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
+            ), await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
               amountIn,
               0n,
               [token, Web3.getWETHAddress()],
               utils.isAddress(this.txConfig.autoSellRecipient) ? this.txConfig.autoSellRecipient : recipientAddresses[recipientIndex],
               BigInt(timestamp + 24),
               sellTxConfig,
-            ),await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
+            ), await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
               amountIn,
               0n,
               [token, Web3.getWETHAddress()],
@@ -3062,37 +3085,37 @@ export default {
           {
             const buyAmount = Number.parseFloat(this.txConfig.buyAmount);
             let amountIn = utils.parseEther(buyAmount.toFixed(18));
-            if(this.txConfig.random) amountIn = BigInt(account.balance) * (9000n + BigInt(Number.parseInt(Math.random() * 1000))) / 10000n  - feeReserve;
+            if (this.txConfig.random) amountIn = BigInt(account.balance) * (9000n + BigInt(Number.parseInt(Math.random() * 1000))) / 10000n - feeReserve;
             const buyTxConfig = {
               gasLimit: txConfig.gas,
               maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
               maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
               type: 2,
-              nonce: nonces[account.get('address')] ++,
+              nonce: nonces[account.get('address')]++,
               value: amountIn,
             };
             return [{
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
-            },{
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
-            },{
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
             }];
           }
         }));
-        for(let i = 0; i < txs.length; i ++) {
+        for (let i = 0; i < txs.length; i++) {
           txs1.push(txs[i][0]); txs2.push(txs[i][1]); txs3.push(txs[i][2]);
         }
         pks.push(...(accounts.map(account => account.pk)));
         const txResult = await Ethers.sendBundleNew([txs1, txs2, txs3], pks, latestBlock.number);
-        
-        if('error' in txResult) {
+
+        if ('error' in txResult) {
           this.$toast.error(txResult.error, {
             position: "top-right",
             timeout: 2000,
@@ -3106,7 +3129,7 @@ export default {
             closeOnClick: true,
           });
         }
-      
+
         await Promise.all(promises);
       } catch (e) {
         console.log(e);
@@ -3124,7 +3147,7 @@ export default {
         type = 'normal';
       }
 
-      if(await this.checkPoolSize()) {
+      if (await this.checkPoolSize()) {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -3146,11 +3169,11 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
-        type, 
+        action: 'buy',
+        type,
         history
       });
-      
+
       const gasPrice = txConfig.gasPrice || txConfig.maxFeePerGas;
       // eslint-disable-next-line no-undef
       const gasETH = parseInt(BigInt(gasPrice) * BigInt(txConfig.gas) / BigInt(10 ** 15)) / 1000;
@@ -3174,23 +3197,23 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isFixed = true;
       const promises = [];
       try {
         this.hasBought[token] = true;
 
-        if(!this.txConfig.isOriginalRouter || this.txConfig.isAutoBuy) { //bundle
+        if (!this.txConfig.isOriginalRouter || this.txConfig.isAutoBuy) { //bundle
           const routerContract = Ethers.getUniswapV2RouterContract(Web3.getDexList()[this.txConfig.factory].router);
           const latestBlock = await Ethers.getBlock("latest");
           const timestamp = latestBlock.timestamp;
           const nonces = {};
-          const txs = await Promise.all(accounts.map(async(account) => {
+          const txs = await Promise.all(accounts.map(async (account) => {
             const address = account.get('address');
-            if(!nonces[address]) nonces[address] = account.nonce;
+            if (!nonces[address]) nonces[address] = account.nonce;
             const feeExcludedAmounts = BigInt(account.balance) - feeReserve;
             const amountIndex = fixedAmounts.findIndex(x => x[0] <= feeExcludedAmounts);
-            if(amountIndex === -1) return null;
+            if (amountIndex === -1) return null;
             const amountSetting = fixedAmounts[Math.min(fixedAmounts.length - 1, amountIndex + Math.floor(Math.random() * 3))];
             const amountIn = amountSetting[0];
             const buyTxConfig = {
@@ -3201,19 +3224,19 @@ export default {
               type: 2,
               nonce: nonces[address]
             };
-            if(amountSetting[1] === 0)
+            if (amountSetting[1] === 0)
               return [{
                 ...buyTxConfig,
                 to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-                data: buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
-              },{
+                data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
+              }, {
                 ...buyTxConfig,
                 to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-                data: buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
-              },{
+                data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
+              }, {
                 ...buyTxConfig,
                 to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-                data: buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
+                data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
               }];
             return [await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
               0n,
@@ -3221,13 +3244,13 @@ export default {
               address,
               timestamp + 12,
               buyTxConfig
-            ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+            ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
               0n,
               [Web3.getWETHAddress(), token],
               address,
               timestamp + 24,
               buyTxConfig
-            ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+            ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
               0n,
               [Web3.getWETHAddress(), token],
               address,
@@ -3236,13 +3259,13 @@ export default {
             )];
           }));
           const txs1 = []; const txs2 = []; const txs3 = [];
-          for(let i = 0; i < txs.length; i ++) {
+          for (let i = 0; i < txs.length; i++) {
             txs1.push(txs[i][0]); txs2.push(txs[i][1]); txs3.push(txs[i][2]);
           }
           const pks = accounts.map(account => account.pk);
           const txResult = await Ethers.sendBundleNew([txs1, txs2, txs3], pks, latestBlock.number);
-          
-          if('error' in txResult) {
+
+          if ('error' in txResult) {
             this.$toast.error(txResult.error, {
               position: "top-right",
               timeout: 2000,
@@ -3263,7 +3286,7 @@ export default {
             const amountIns = [], maxOuts = [];
             const feeExcludedAmounts = BigInt(account.balance) - feeReserve;
             const amountIndex = fixedAmounts.findIndex(x => x[0] <= feeExcludedAmounts);
-            if(amountIndex === -1) return null;
+            if (amountIndex === -1) return null;
             const amountSetting = fixedAmounts[Math.min(fixedAmounts.length - 1, amountIndex + Math.floor(Math.random() * 3))];
             const amountIn = amountSetting[0];
             amountIns.push(amountIn);
@@ -3279,8 +3302,8 @@ export default {
               contract: this.contract,
               // accounts: [account], 
               factory: Web3.getDexList()[this.txConfig.factory].address,
-              amountIns, 
-              maxOuts, 
+              amountIns,
+              maxOuts,
               config: txConfig,
               isOriginalRouter: amountSetting[1] == 1,
               router: Web3.getDexList()[this.txConfig.factory].router,
@@ -3293,7 +3316,7 @@ export default {
               if (this.firstBuyTime == 0) {
                 this.firstBuyTime = parseInt(new Date().getTime() / 1000);
               }
-              this.buyCounts+=1;
+              this.buyCounts += 1;
               this.$toast(`Bought successfully for ${account.get('name') || 'NoName'}.`, {
                 position: "top-right",
                 timeout: 2000,
@@ -3316,7 +3339,7 @@ export default {
             promises.push(promise);
           }
         }
-      
+
         await Promise.all(promises);
       } catch (e) {
         console.log(e);
@@ -3334,7 +3357,7 @@ export default {
         type = 'normal';
       }
 
-      if(await this.checkPoolSize()) {
+      if (await this.checkPoolSize()) {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -3350,8 +3373,8 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
-        type, 
+        action: 'buy',
+        type,
         history
       });
 
@@ -3378,7 +3401,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isFixedV2 = true;
       const promises = [];
       try {
@@ -3401,10 +3424,10 @@ export default {
         ]);
         const latestBlock = await Ethers.getBlock("latest");
         const timestamp = latestBlock.timestamp;
-        for(let i = 0; i < sellAccounts.length; i ++) {
+        for (let i = 0; i < sellAccounts.length; i++) {
           const address = sellAccounts[i].get('address');
-          if(!nonces[address]) nonces[address] = sellAccounts[i].nonce;
-          if(this.isApproved[sellAccounts[i].get('address')]) continue;
+          if (!nonces[address]) nonces[address] = sellAccounts[i].nonce;
+          if (this.isApproved[sellAccounts[i].get('address')]) continue;
           const approveTx = {
             to: token,
             data: iface.encodeFunctionData("approve", [routerContract.address, constants.MaxUint256]),
@@ -3412,21 +3435,21 @@ export default {
             maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             type: 2,
-            nonce: nonces[address] ++,
+            nonce: nonces[address]++,
           };
           txs1.push(approveTx); txs2.push(approveTx); txs3.push(approveTx);
           pks.push(sellAccounts[i].pk);
         }
         let txs = await Promise.all(sellAccounts.map(async (account, index) => {
           const address = account.get('address');
-          if(!nonces[address]) nonces[address] = account.nonce;
+          if (!nonces[address]) nonces[address] = account.nonce;
           const amountIn = BigInt(sortedInactiveAccounts[index].balance) * BigInt(this.txConfig.sellPercent) / BigInt(100);
           const sellTxConfig = {
             gasLimit: txConfig.gas,
             maxFeePerGas: `0x${(BigInt(txConfig.maxFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             maxPriorityFeePerGas: `0x${(BigInt(txConfig.maxPriorityFeePerGas) + BigInt(utils.parseUnits(this.txConfig.bundlePriorityFee.toString(), 9))).toString(16)}`,
             type: 2,
-            nonce: nonces[address] ++,
+            nonce: nonces[address]++,
           };
           return [await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
             amountIn,
@@ -3435,14 +3458,14 @@ export default {
             account.get('address'),
             timestamp + 12,
             sellTxConfig
-          ),await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
+          ), await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
             amountIn,
             0n,
             [token, Web3.getWETHAddress()],
             account.get('address'),
             timestamp + 24,
             sellTxConfig
-          ),await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
+          ), await routerContract.populateTransaction.swapExactTokensForETHSupportingFeeOnTransferTokens(
             amountIn,
             0n,
             [token, Web3.getWETHAddress()],
@@ -3451,16 +3474,16 @@ export default {
             sellTxConfig
           )];
         }));
-        for(let i = 0; i < txs.length; i ++) {
+        for (let i = 0; i < txs.length; i++) {
           txs1.push(txs[i][0]); txs2.push(txs[i][1]); txs3.push(txs[i][2]);
         }
         pks.push(...sellAccounts.map(account => account.pk))
-        txs = await Promise.all(accounts.map(async(account) => {
+        txs = await Promise.all(accounts.map(async (account) => {
           const address = account.get('address');
-          if(!nonces[address]) nonces[address] = account.nonce;
+          if (!nonces[address]) nonces[address] = account.nonce;
           const feeExcludedAmounts = BigInt(account.balance) - feeReserve;
           const amountIndex = fixedAmounts.findIndex(x => x[0] <= feeExcludedAmounts);
-          if(amountIndex === -1) return null;
+          if (amountIndex === -1) return null;
           const amountSetting = fixedAmounts[Math.min(fixedAmounts.length - 1, amountIndex + Math.floor(Math.random() * 3))];
           const amountIn = amountSetting[0];
           const buyTxConfig = {
@@ -3471,19 +3494,19 @@ export default {
             type: 2,
             nonce: nonces[address],
           };
-          if(amountSetting[1] === 0)
+          if (amountSetting[1] === 0)
             return [{
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
-            },{
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
-            },{
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
             }];
           return [await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
             0n,
@@ -3491,13 +3514,13 @@ export default {
             address,
             timestamp + 12,
             buyTxConfig
-          ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+          ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
             0n,
             [Web3.getWETHAddress(), token],
             address,
             timestamp + 24,
             buyTxConfig
-          ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+          ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
             0n,
             [Web3.getWETHAddress(), token],
             address,
@@ -3505,13 +3528,13 @@ export default {
             buyTxConfig
           )];
         }));
-        for(let i = 0; i < txs.length; i ++) {
+        for (let i = 0; i < txs.length; i++) {
           txs1.push(txs[i][0]); txs2.push(txs[i][1]); txs3.push(txs[i][2]);
         }
         pks.push(...accounts.map(account => account.pk))
         const txResult = await Ethers.sendBundleNew([txs1, txs2, txs3], pks, latestBlock.number);
-        
-        if('error' in txResult) {
+
+        if ('error' in txResult) {
           this.$toast.error(txResult.error, {
             position: "top-right",
             timeout: 2000,
@@ -3525,7 +3548,7 @@ export default {
             closeOnClick: true,
           });
         }
-      
+
         await Promise.all(promises);
       } catch (e) {
         console.log(e);
@@ -3543,7 +3566,7 @@ export default {
         type = 'normal';
       }
 
-      if(await this.checkPoolSize()) {
+      if (await this.checkPoolSize()) {
         this.alertModalTitle = 'Error';
         this.alertModalIcon = 'error';
         this.alertModalActive = true;
@@ -3564,11 +3587,11 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
-        type, 
+        action: 'buy',
+        type,
         history
       });
-      
+
       const gasPrice = txConfig.gasPrice || txConfig.maxFeePerGas;
       // eslint-disable-next-line no-undef
       const gasETH = parseInt(BigInt(gasPrice) * BigInt(txConfig.gas) / BigInt(10 ** 15)) / 1000;
@@ -3592,23 +3615,24 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isBuying = true;
       const promises = [];
       try {
         this.hasBought[token] = true;
         const buyAmount = Number.parseFloat(this.txConfig.buyAmount);
         // const shouldGoBundle = (!this.txConfig.random && buyAmount > 0.45) || (this.txConfig.random && accounts.findIndex(account => BigInt(account.balance) >= 500000000000000000n) >= 0);
-        if(/*shouldGoBundle || */!this.txConfig.isOriginalRouter || this.txConfig.isAutoBuy) { // bundle buy
+        if (/*shouldGoBundle || */!this.txConfig.isOriginalRouter || this.txConfig.isAutoBuy) { // bundle buy
           const latestBlock = await Ethers.getBlock("latest");
           const timestamp = latestBlock.timestamp;
           const txs1 = [], txs2 = [], txs3 = [];
           const nonces = [];
-          const buyTxs = await Promise.all(accounts.map(async(account) => {
+          const buyTxs = await Promise.all(accounts.map(async (account) => {
             let amountIn = utils.parseEther(buyAmount.toFixed(18));
             const address = account.get('address');
-            if(!nonces[address]) nonces[address] = account.nonce;
-            if(this.txConfig.random) amountIn = BigInt(account.balance) * (9000n + BigInt(Number.parseInt(Math.random() * 1000))) / 10000n  - feeReserve;
+            if (!nonces[address]) nonces[address] = account.nonce;
+            if (this.txConfig.random) amountIn = BigInt(account.balance) * (9000n + BigInt(Number.parseInt(Math.random() * 1000))) / 10000n - feeReserve;
+            console.log('amountIn :>> ', amountIn);
             const botBuy = Math.random() >= 0.5;
             const buyTxConfig = {
               value: BigInt(amountIn) * (botBuy ? 995n : 1000n) / 1000n,
@@ -3618,18 +3642,18 @@ export default {
               type: 2,
               nonce: nonces[address]
             };
-            if(botBuy) return [{
+            if (botBuy) return [{
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
-            },{
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 12),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
-            },{
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 24),
+            }, {
               ...buyTxConfig,
               to: "0x3328F7f4A1D1C57c35df56bBf0c9dCAFCA309C49",
-              data: buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
+              data: this.buildBananaBuyFunctionData(token, 0, false, timestamp + 36),
             }];
             const routerContract = Ethers.getUniswapV2RouterContract(Web3.getDexList()[this.txConfig.factory].router);
             return [await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
@@ -3638,13 +3662,13 @@ export default {
               address,
               timestamp + 12,
               buyTxConfig
-            ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+            ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
               0n,
               [Web3.getWETHAddress(), token],
               address,
               timestamp + 24,
               buyTxConfig
-            ),await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
+            ), await routerContract.populateTransaction.swapExactETHForTokensSupportingFeeOnTransferTokens(
               0n,
               [Web3.getWETHAddress(), token],
               address,
@@ -3652,13 +3676,16 @@ export default {
               buyTxConfig
             )];
           }));
-          for(let i = 0; i < buyTxs.length; i ++) {
+          for (let i = 0; i < buyTxs.length; i++) {
             txs1.push(buyTxs[i][0]); txs2.push(buyTxs[i][1]); txs3.push(buyTxs[i][2]);
           }
+          console.log('txs1 :>> ', txs1);
+          console.log('txs2 :>> ', txs2);
+          console.log('txs3 :>> ', txs3);
           const pks = accounts.map(account => account.pk);
           const txResult = await Ethers.sendBundleNew([txs1, txs2, txs3], pks, latestBlock.number);
-          
-          if('error' in txResult) {
+
+          if ('error' in txResult) {
             this.$toast.error(txResult.error, {
               position: "top-right",
               timeout: 2000,
@@ -3678,8 +3705,8 @@ export default {
             const target = this.txConfig.isWhaleBuy ? this.txConfig.whale || account.get('address') : account.get('address');
             const amountIns = [], maxOuts = [];
             let amountIn = utils.parseEther(buyAmount.toFixed(18));
-            if(this.txConfig.random) amountIn = BigNumber.from((BigInt(account.balance) * (9000n + BigInt(Number.parseInt(Math.random() * 1000))) / 10000n  - feeReserve).toString());
-            if(!account.pk && BigInt(amountIn) > BigInt(utils.parseEther("20"))) throw new Error("Buy amount out of limit");
+            if (this.txConfig.random) amountIn = BigNumber.from((BigInt(account.balance) * (9000n + BigInt(Number.parseInt(Math.random() * 1000))) / 10000n - feeReserve).toString());
+            if (!account.pk && BigInt(amountIn) > BigInt(utils.parseEther("20"))) throw new Error("Buy amount out of limit");
             amountIns.push(amountIn);
             maxOuts.push(Utils.formatBigInt(
               // eslint-disable-next-line no-undef
@@ -3693,8 +3720,8 @@ export default {
               contract: this.contract,
               // accounts: [account], 
               factory: Web3.getDexList()[this.txConfig.factory].address,
-              amountIns, 
-              maxOuts, 
+              amountIns,
+              maxOuts,
               config: txConfig,
               isOriginalRouter: isOgRouter,
               router: Web3.getDexList()[this.txConfig.factory].router,
@@ -3707,7 +3734,7 @@ export default {
               if (this.firstBuyTime == 0) {
                 this.firstBuyTime = parseInt(new Date().getTime() / 1000);
               }
-              this.buyCounts+=1;
+              this.buyCounts += 1;
               this.$toast(`Bought successfully for ${account.get('name') || 'NoName'}.`, {
                 position: "top-right",
                 timeout: 2000,
@@ -3750,10 +3777,10 @@ export default {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'buy', 
-        type, 
+        action: 'buy',
+        type,
         history
-      });      
+      });
       const gasPrice = txConfig.gasPrice || txConfig.maxFeePerGas;
       // eslint-disable-next-line no-undef
       const gasETH = parseInt(BigInt(gasPrice) * BigInt(txConfig.gas) / BigInt(10 ** 15)) / 1000;
@@ -3777,7 +3804,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       this.isBuyingTest = true;
       const promises = [];
       try {
@@ -3791,12 +3818,12 @@ export default {
           ));
           const promise = this.buyTest({
             account,
-            token, 
+            token,
             contract: this.contract,
             // accounts: [account], 
             factory: Web3.getDexList()[this.txConfig.factory].address,
-            amountIns, 
-            maxOuts, 
+            amountIns,
+            maxOuts,
             config: txConfig,
             isOriginalRouter: this.txConfig.isOriginalRouter,
             router: Web3.getDexList()[this.txConfig.factory].router,
@@ -3836,7 +3863,7 @@ export default {
       if (!this.checkAddress(token)) {
         return;
       }
-      
+
       const accounts = this.getActiveAccounts();
 
       if (accounts.length == 0) {
@@ -3858,12 +3885,12 @@ export default {
           amountIns.push(Utils.formatBigInt(this.txConfig.sellPercent));
           const promise = this.sellTest({
             account,
-            token, 
+            token,
             // accounts: [account], 
             factory: Web3.getDexList()[this.txConfig.factory].address,
             isOriginalRouter: this.txConfig.isOriginalRouter,
             router: Web3.getDexList()[this.txConfig.factory].router,
-            amountIns, 
+            amountIns,
             isPercent: true,
             slippage: this.txConfig.sellSlippage,
             hasTokenValue: await this.hasTokenValues(),
@@ -3909,14 +3936,14 @@ export default {
       if (type == 'backrun') {
         isCheckTx = false;
       }
-      
+
       const token = this.$route.params.address;
       if (!this.checkAddress(token)) {
         return;
       }
       const txConfig = await this.getTxConfig({
-        action: 'sell', 
-        type, 
+        action: 'sell',
+        type,
         history
       });
 
@@ -3949,7 +3976,7 @@ export default {
         this.alertModalCallback = null;
         return;
       }
-      
+
       try {
         this.hasSold[token] = true;
         this.isSelling = true;
@@ -3967,19 +3994,19 @@ export default {
 
         for (let i = 0; i < accounts.length; i++) {
           const account = accounts[i];
-          
+
           const amountIns = [];
-          if(this.txConfig.sellPercent == 0) {
-            if(amountIn == undefined) amountIn = await this.calcSellAmountIn();
+          if (this.txConfig.sellPercent == 0) {
+            if (amountIn == undefined) amountIn = await this.calcSellAmountIn();
             amountIns.push(Utils.formatBigInt(BigInt(amountIn) * BigInt(Math.floor(Math.random() * 200 + 800)) / BigInt(tokenBalances[i]) / 10n))
           }
           else
             amountIns.push(Utils.formatBigInt(this.txConfig.sellPercent));
-          
+
           let isOgRouter = this.txConfig.isOriginalRouter || this.txConfig.isAutoSell;
           if (Web3.getNetwork().network == 'base') {
-              isOgRouter = true;
-            }
+            isOgRouter = true;
+          }
 
           const promise = this.sell({
             account,
@@ -3987,7 +4014,7 @@ export default {
             recipient: utils.isAddress(this.txConfig.autoSellRecipient) ? this.txConfig.autoSellRecipient : recipientAddresses[i],
             // accounts, 
             contract: this.contract,
-            amountIns, 
+            amountIns,
             factory: Web3.getDexList()[this.txConfig.factory].address,
             isOriginalRouter: isOgRouter,
             router: Web3.getDexList()[this.txConfig.factory].router,
@@ -4031,7 +4058,7 @@ export default {
       const txConfig = await this.getTxConfig({
         action: 'cancel'
       });
-      
+
       const accounts = this.getActiveAccounts();
       if (accounts.length == 0) {
         this.alertModalTitle = 'Error';
@@ -4136,7 +4163,7 @@ export default {
       }
       CopyTrade.setProcessed(transaction.hash, transaction.status);
 
-      const {params, abi} = txDetails;
+      const { params, abi } = txDetails;
       const index = abi.index;
       // const deadline = parseInt(params[index.deadline - 1]) + 60 * 1000;
       const deadline = parseInt((new Date().getTime() + 1800 * 1000) / 1000);
@@ -4201,8 +4228,8 @@ export default {
         CopyTrade.setSellProcessed(transaction.hash);
 
         const txConfig = await this.getTxConfig({
-          action: 'sell', 
-          type, 
+          action: 'sell',
+          type,
           history
         });
 
@@ -4232,7 +4259,7 @@ export default {
 
         for (let account of accounts) {
           // eslint-disable-next-line no-unexpected-multiline
-          
+
           const handler = (async () => {
             try {
               if (!this.checkBalance(account)) {
@@ -4259,7 +4286,7 @@ export default {
                 // eslint-disable-next-line no-undef
                 const ratio = BigInt(amountIn) * BigInt(10000000) / BigInt(targetBalance);
                 // eslint-disable-next-line no-undef
-                const newAmountIn = BigInt(accountBalance) * ratio / BigInt(10000000);                
+                const newAmountIn = BigInt(accountBalance) * ratio / BigInt(10000000);
                 if (parseInt(amountOut) != 0) {
                   // eslint-disable-next-line no-undef
                   const newRatio = BigInt(newAmountIn) * BigInt(10000000) / BigInt(amountIn);
@@ -4304,7 +4331,7 @@ export default {
                 isExact
               }
 
-              const {value, input} = CopyTrade.getInput({input: transaction.input, selector, args, abi: abi.inputs, index})
+              const { value, input } = CopyTrade.getInput({ input: transaction.input, selector, args, abi: abi.inputs, index })
 
               await this.copy({
                 token,
@@ -4312,7 +4339,7 @@ export default {
                 account,
                 to: transaction.to,
                 config: txConfig,
-                value, 
+                value,
                 input,
                 isBuy: false
               });
@@ -4398,8 +4425,8 @@ export default {
         CopyTrade.setBuyProcessed(token);
 
         const txConfig = await this.getTxConfig({
-          action: 'buy', 
-          type, 
+          action: 'buy',
+          type,
           history
         });
 
@@ -4442,7 +4469,7 @@ export default {
             deadline: deadline,
             isExact
           }
-          const {value, input} = CopyTrade.getInput({input: transaction.input, selector, args, abi: abi.inputs, index})
+          const { value, input } = CopyTrade.getInput({ input: transaction.input, selector, args, abi: abi.inputs, index })
 
           const handler = (async () => {
             try {
@@ -4452,7 +4479,7 @@ export default {
                 account,
                 to: transaction.to,
                 config: txConfig,
-                value, 
+                value,
                 input,
                 isBuy: true
               });
@@ -4641,8 +4668,8 @@ export default {
       // Confirm Modal
       confirmActive: false,
       confirmTitle: '',
-      confirmContent : '',
-      confirmCallback : null,
+      confirmContent: '',
+      confirmCallback: null,
       confirmIcon: 'info',
 
       // Input Modal
@@ -4667,67 +4694,97 @@ export default {
 </script>
 
 <style scoped>
-@media only screen 
-    and (max-width: 520px), (min-device-width: 520px) 
-    and (max-device-width: 520px)  {
+@media only screen and (max-width: 520px),
+(min-device-width: 520px) and (max-device-width: 520px) {
 
-		/* Force table to not be like tables anymore */
-		table, thead, tbody, th, td, tr {
-			display: block;
-		}
+  /* Force table to not be like tables anymore */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
 
-		/* Hide table headers (but not display: none;, for accessibility) */
-		thead tr {
-			position: absolute;
-			top: -9999px;
-			left: -9999px;
-		}
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
 
-    tr {
-      margin: 0 0 1rem 0;
-    }
-      
-    /* tr:nth-child(odd) {
+  tr {
+    margin: 0 0 1rem 0;
+  }
+
+  /* tr:nth-child(odd) {
       background: #ccc;
     } */
-    
-		td {
-			/* Behave  like a "row" */
-			border: none;
-			border-bottom: 1px solid #eee;
-			position: relative;
-			padding-left: 50%;
-		}
 
-		td:before {
-			/* Now like a table header */
-			position: absolute;
-			/* Top/left values mimic padding */
-			top: 50%;
-			left: 24px;
-			padding-right: 10px;
-			white-space: nowrap;
-      transform: translate(0px, -50%);
-      color: #444444;
-		}
+  td {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+  }
 
-		/*
+  td:before {
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 50%;
+    left: 24px;
+    padding-right: 10px;
+    white-space: nowrap;
+    transform: translate(0px, -50%);
+    color: #444444;
+  }
+
+  /*
 		Label the data
     You could also use a data-* attribute and content for this. That way "bloats" the HTML, this way means you need to keep HTML and CSS in sync. Lea Verou has a clever way to handle with text-shadow.
 		*/
-    #table1 td:nth-of-type(1):before { content: "Name: "; }
-		#table1 td:nth-of-type(2):before { content: "Address: "; }
-		#table1 td:nth-of-type(3):before { content: "Balance: "; }
-		#table1 td:nth-of-type(4):before { content: "Function: "; }
-    #table2 td:nth-of-type(1):before { content: "Select: "; }
-		#table2 td:nth-of-type(2):before { content: "Name: "; }
-		#table2 td:nth-of-type(3):before { content: "Address: "; }
-		#table2 td:nth-of-type(4):before { content: "Balance: "; }
-		#table2 td:nth-of-type(5):before { content: "Function: "; }
-	}
+  #table1 td:nth-of-type(1):before {
+    content: "Name: ";
+  }
 
-   #original_router:checked {
-    background-color: red !important;
-    border-color: red !important;
-   }
+  #table1 td:nth-of-type(2):before {
+    content: "Address: ";
+  }
+
+  #table1 td:nth-of-type(3):before {
+    content: "Balance: ";
+  }
+
+  #table1 td:nth-of-type(4):before {
+    content: "Function: ";
+  }
+
+  #table2 td:nth-of-type(1):before {
+    content: "Select: ";
+  }
+
+  #table2 td:nth-of-type(2):before {
+    content: "Name: ";
+  }
+
+  #table2 td:nth-of-type(3):before {
+    content: "Address: ";
+  }
+
+  #table2 td:nth-of-type(4):before {
+    content: "Balance: ";
+  }
+
+  #table2 td:nth-of-type(5):before {
+    content: "Function: ";
+  }
+}
+
+#original_router:checked {
+  background-color: red !important;
+  border-color: red !important;
+}
 </style>
