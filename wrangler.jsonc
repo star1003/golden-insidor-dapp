@@ -1,0 +1,45 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "anysniper-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-05-04",
+  "assets": { "directory": "app/dist" },
+  "vars": {
+    "WC_PROJECT_ID": "400c360b1558358dae775e3a6fa0b88b",
+    "BLOCKNATIVE_API_KEY": "4eaefd5d-bde2-4c2c-90b6-7f128a25cf83",
+    "BLOCKRAZOR_API_KEY": "n1cpLA8V9Q9ziNw5HgQwJCbSOYoQ6191T3vUkJJ1FowFv7JoKRmNutGtOL6QsPTOjl9QjgeoSVYNP89bmtKLkmXECz9KiGLn",
+    "MERKLE_API_KEY": "pk_mbs_f29d60e8e18734b53eff9f093b4d0078"
+  }
+  // "compatibility_flags": [
+  //   "nodejs_compat"
+  // ],
+  // "vars": {
+  //   "MY_VAR": "my-variable"
+  // },
+  // "kv_namespaces": [
+  //   {
+  //     "binding": "MY_KV_NAMESPACE",
+  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  //   }
+  // ],
+  // "r2_buckets": [
+  //   {
+  //     "binding": "MY_BUCKET",
+  //     "bucket_name": "my-bucket"
+  //   }
+  // ],
+  // "d1_databases": [
+  //   {
+  //     "binding": "MY_DB",
+  //     "database_name": "my-database",
+  //     "database_id": ""
+  //   }
+  // ],
+  // "ai": {
+  //   "binding": "AI"
+  // },
+  // "observability": {
+  //   "enabled": true,
+  //   "head_sampling_rate": 1
+  // }
+}
