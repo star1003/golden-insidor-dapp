@@ -1041,6 +1041,8 @@ export default {
         this.autoSellTimer = 0;
     },
     async handleAutoBuy() {
+
+      console.log('handleAutoBuy');
       const availableAccountsIndex = [];
       const buyAmount = BigInt(utils.parseEther(this.txConfig.buyAmount));
       for (let i = 2; i < this.accounts.length; i++) {
@@ -1063,7 +1065,7 @@ export default {
         const index = Math.floor(Math.random() * availableAccountsIndex.length);
         selectedIndexes.push(availableAccountsIndex[index]);
       }
-
+      console.log("selectedIndexes :>> ", selectedIndexes);
       for (let i = 0; i < this.accounts.length; i++) {
         // Vue.set(this.activeAccounts, this.accounts[i].get('address'), selectedIndexes.includes(i));
         this.activeAccounts[this.accounts[i].get('address')] = selectedIndexes.includes(i);
@@ -1720,7 +1722,7 @@ export default {
     },
     async getPoolSize() {
       const token = this.$route.params.address;
-      const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
+      const FACTORY_ADDRESS = Web3.getDexList()[this.txConfig.factory].address;
       const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
       const uniswapV2FactoryContract = Ethers.getUniswapV2FactoryContract(FACTORY_ADDRESS);
       const pairAddress = await uniswapV2FactoryContract.getPair(

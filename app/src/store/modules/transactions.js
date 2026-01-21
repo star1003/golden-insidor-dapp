@@ -34,7 +34,7 @@ const state = {
     buyOn: 'enableTrading',
     isBuyInstant: true,
     isSellOnWarn: true,
-    factory: 0,
+    factory: 2,
     copyRouters: [],
 
     isV3: false,
